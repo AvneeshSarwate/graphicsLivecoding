@@ -1,0 +1,455 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html lang="en">
+
+<head>
+    <meta http-equiv="content-type" content="text/html; charset=utf-8">
+    <title>Eyebeam Projection</title>
+    <script type="text/javascript" src="p5.js"></script>
+    <script type="text/javascript" src="p5.func.js"></script>
+    <script type="text/javascript" src="jquery.js"></script>
+    <script type="text/javascript" src="svg.js"></script>
+    <script type="text/javascript" src="twgl-full.js"></script>
+    <script type="text/javascript" src="lodash.js"></script>
+    <script type="text/javascript" src="WebMidi.js"></script>
+    <script type="text/javascript" src="FPSMeter.js"></script>
+    <script type="text/javascript" src="dat.gui.js"></script>
+    <script type="text/javascript" src="boids.js"></script>
+</head>
+
+<body style="background-color: white;">
+    <div style="display: none">
+        <svg id="eyebeam" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"
+            x="0px" y="0px" viewbox="0 0 1920 1080" style="enable-background:new 0 0 1920 1080;"
+            xml:space="preserve">
+            <rect width="100%" height="100%"></rect>
+            <g xmlns="http://www.w3.org/2000/svg">
+                <polygon points="1197.2,906.6 1221.3,906.6 1246,869.6 1270.7,906.6 1294.7,906.6 1256.7,849.6 1256.7,809.1 1235.2,809.1 
+	1235.2,849.6 " />
+                <path
+                    d="M157.6,809.1h-21l39,97.5H195l39-97.5h-21l-7.8,19.5h-39.9L157.6,809.1z M197.4,848.1l-12.1,30.3l-12.1-30.3H197.4z" />
+                <polygon points="341.5,810.2 244.1,810.2 244.1,829.7 322.1,829.7 322.1,849.2 244.1,849.2 244.1,868.7 322.1,868.7 322.1,888.2 
+	244.1,888.2 244.1,907.7 341.5,907.7 " />
+                <path class="bottomB" d="M659.8,808.6H381.4v0c-16.1,0-29.2,13.1-29.2,29.2c0,8.7,3.8,16.6,9.9,21.9c-3.4,4.8-5.5,10.7-5.5,17
+	c0,15.9,12.6,28.8,28.4,29.2v0h274.9V808.6z M385.8,886.5c-5.4,0-9.7-4.4-9.7-9.7s4.4-9.7,9.7-9.7h259.9v19.5H385.8z M645.7,828.1
+	v19.5H381.4v0c-5.4,0-9.7-4.4-9.7-9.7c0-5.4,4.4-9.7,9.7-9.7H645.7z" />
+                <polygon points="671.5,906 671.5,886.5 1170.2,886.5 1170.2,867.1 671.5,867.1 671.5,847.6 1170.2,847.6 1170.2,828.1 671.5,828.1 
+	671.5,808.6 1189.7,808.6 1189.7,906 " />
+                <polygon
+                    points="725.3,173.9 701.3,173.9 676.6,210.9 651.9,173.9 627.9,173.9 665.9,230.8 665.9,271.3 687.4,271.3 687.4,230.8 " />
+                <path
+                    d="M1767.3,271.9h21l-39-97.5h-19.5l-39,97.5h21l7.8-19.5h39.9L1767.3,271.9z M1727.5,232.9l12.1-30.3l12.1,30.3H1727.5z" />
+                <polygon points="1581,271.9 1678.5,271.9 1678.5,252.4 1600.5,252.4 1600.5,232.9 1678.5,232.9 1678.5,213.4 1600.5,213.4 
+	1600.5,193.9 1678.5,193.9 1678.5,174.4 1581,174.4 " />
+                <path class="topB" d="M1262.7,271.9h278.5v0c16.1,0,29.2-13.1,29.2-29.2c0-8.7-3.8-16.6-9.9-21.9c3.4-4.8,5.5-10.7,5.5-17
+	c0-15.9-12.6-28.8-28.4-29.2v0h-274.9V271.9z M1536.8,193.9c5.4,0,9.7,4.4,9.7,9.7c0,5.4-4.4,9.7-9.7,9.7h-259.9v-19.5H1536.8z
+	 M1276.9,252.4v-19.5h264.4v0c5.4,0,9.7,4.4,9.7,9.7c0,5.4-4.4,9.7-9.7,9.7H1276.9z" />
+                <polygon points="1251.1,174.4 1251.1,193.9 752.4,193.9 752.4,213.4 1251.1,213.4 1251.1,232.9 752.4,232.9 752.4,252.4 
+	1251.1,252.4 1251.1,271.9 732.9,271.9 732.9,174.4 " />
+                <polygon points="27,270.8 27,173.3 619.8,173.3 619.8,192.8 46.5,192.8 46.5,212.3 619.8,212.3 619.8,231.8 46.5,231.8 46.5,251.3 
+	619.8,251.3 619.8,270.8 " />
+                <polygon points="1895.6,809.7 1895.6,907.1 1302.8,907.1 1302.8,887.7 1876.1,887.7 1876.1,868.2 1302.8,868.2 1302.8,848.7 
+	1876.1,848.7 1876.1,829.2 1302.8,829.2 1302.8,809.7 " />
+                <polygon points="1895.6,483.7 1876.1,483.7 1876.1,405.7 1856.6,405.7 1856.6,483.7 1837.1,483.7 1837.1,405.7 1817.6,405.7 
+	1817.6,483.7 1798.1,483.7 1798.1,386.2 1895.6,386.2 " />
+                <path class="rightB" d="M1798.1,494.4v68.2h0c0,16.1,13.1,29.2,29.2,29.2c8.7,0,16.6-3.8,21.9-9.9c4.8,3.4,10.7,5.5,17,5.5
+	c15.9,0,28.8-12.6,29.2-28.4h0v-64.6H1798.1z M1876.1,558.2c0,5.4-4.4,9.7-9.7,9.7s-9.7-4.4-9.7-9.7v-44.3h19.5V558.2z
+	 M1817.6,513.9h19.5v48.7l0,0c0,5.4-4.4,9.7-9.7,9.7c-5.4,0-9.7-4.4-9.7-9.7V513.9z" />
+                <polygon points="1895.6,378.7 1895.6,354.7 1858.6,330 1895.6,305.3 1895.6,281.3 1838.6,319.2 1798.1,319.2 1798.1,340.7 
+	1838.6,340.7 " />
+                <path
+                    d="M1798.1,782.3v21l97.5-39v-19.5l-97.5-39v21l19.5,7.8v39.9L1798.1,782.3z M1837.1,742.4l30.3,12.1l-30.3,12.1V742.4z" />
+                <polygon points="1798.1,697.9 1817.6,697.9 1817.6,619.9 1837.1,619.9 1837.1,697.9 1856.6,697.9 1856.6,619.9 1876.1,619.9 
+	1876.1,697.9 1895.6,697.9 1895.6,600.4 1798.1,600.4 " />
+                <polygon points="1798.1,174.8 1798.1,272.3 1817.6,272.3 1817.6,194.3 1837.1,194.3 1837.1,272.3 1856.6,272.3 1856.6,194.3 
+	1876.1,194.3 1876.1,272.3 1895.6,272.3 1895.6,174.8 " />
+                <polygon
+                    points="27,701.8 27,725.8 64,750.5 27,775.2 27,799.3 84,761.3 124.5,761.3 124.5,739.8 84,739.8 " />
+                <path
+                    d="M124.5,298.3v-21l-97.5,39v19.5l97.5,39v-21l-19.5-7.8v-39.9L124.5,298.3z M85.5,338.1L55.2,326l30.3-12.1V338.1z" />
+                <polygon points="27,596.9 46.5,596.9 46.5,674.8 66,674.8 66,596.9 85.5,596.9 85.5,674.8 105,674.8 105,596.9 124.5,596.9 
+	124.5,694.3 27,694.3 " />
+                <polygon points="124.5,382.7 105,382.7 105,460.6 85.5,460.6 85.5,382.7 66,382.7 66,460.6 46.5,460.6 46.5,382.7 27,382.7 
+	27,480.1 124.5,480.1 " />
+                <polygon points="124.5,905.7 124.5,808.3 105,808.3 105,886.2 85.5,886.2 85.5,808.3 66,808.3 66,886.2 46.5,886.2 46.5,808.3 
+	27,808.3 27,905.7 " />
+                <path class="leftB" d="M124.5,586.1v-68.2h0c0-16.1-13.1-29.2-29.2-29.2c-8.7,0-16.6,3.8-21.9,9.9c-4.8-3.4-10.7-5.5-17-5.5
+	c-15.9,0-28.8,12.6-29.2,28.4h0v64.6H124.5z M46.5,522.3c0-5.4,4.4-9.7,9.7-9.7s9.7,4.4,9.7,9.7v44.3H46.5V522.3z M105,566.6H85.5
+	v-48.7h0c0-5.4,4.4-9.7,9.7-9.7s9.7,4.4,9.7,9.7V566.6z" />
+            </g>
+        </svg>
+    </div>
+    <canvas id="glCanvas" width="800" height="600"></canvas>
+</body>
+<script id="vs" type="notjs">
+#version 300 es
+in vec4 position;
+
+void main() {
+gl_Position = position;
+}
+</script>
+<script id="fs" type="notjs">
+#version 300 es
+precision mediump float;
+
+uniform vec2 resolution;
+uniform float time;
+uniform sampler2D svgFrame;
+
+out vec4 fragColor;
+void main() {
+vec2 uv = gl_FragCoord.xy / resolution;
+float color = 0.0;
+// lifted from glslsandbox.com
+color += sin( uv.x * cos( time / 3.0 ) * 60.0 ) + cos( uv.y * cos( time / 2.80 ) * 10.0 );
+color += sin( uv.y * sin( time / 2.0 ) * 40.0 ) + cos( uv.x * sin( time / 1.70 ) * 40.0 );
+color += sin( uv.x * sin( time / 1.0 ) * 10.0 ) + sin( uv.y * sin( time / 3.50 ) * 80.0 );
+color *= sin( time / 10.0 ) * 0.5;
+
+vec4 col = vec4( vec3( color * 0.5, sin( color + time / 2.5 ) * 0.75, color ), 1.0 );
+col = texture(svgFrame, uv);
+
+fragColor = col;
+}
+</script>
+<script src="midiHandling.js"></script>
+<script src="svgAndP5transforms.js"></script>
+<script type="text/javascript">
+    //make SVG manipulatable via SVG.js library
+    var svgDoc = SVG.adopt($("#eyebeam")[0]);
+
+    var fpsMeter = new FPSMeter();
+
+    var gui = new dat.GUI();
+    var controllerProps = { letterTwist: 0, cameraBlend: 0, centerWarp: 0, letterMotion: 0 };
+    var propToSliderIndex = [['letterTwist', 1], ['cameraBlend', 2], ['centerWarp', 3], ['letterMotion', 5]];
+    var controllers = propToSliderIndex.map(ps => [gui.add(controllerProps, ps[0], 0, 1).step(0.01), ps[1]]).forEach(cs => cs[0].onChange(v => sliders[cs[1]] = v * 127));
+
+    var blobVideoURLs = {};
+
+    function createEyeVideo(url) {
+        var req = new XMLHttpRequest();
+        req.open('GET', url, true);
+        req.responseType = 'blob';
+        let eyeVideo = document.createElement("video");
+        eyeVideo.muted = true;
+        eyeVideo.loop = true;
+        // eyeVideo.src = url;
+        eyeVideo.style = "display: none;"
+        req.onload = function () {
+            // Onload is triggered even on 404
+            // so we need to check the status code
+            if (this.status === 200) {
+                var videoBlob = this.response;
+                var vidBlobUrl = URL.createObjectURL(videoBlob);
+                try {
+                    eyeVideo.src = vidBlobUrl;
+                } catch (err) {
+                    console.log("blob exception", err);
+                }
+            }
+        };
+        req.onerror = function () {
+            console.log("error loading blob video for", url);
+        }
+        req.send();
+        return eyeVideo;
+    }
+
+
+    function setupWebcam() {
+        const video = document.createElement('video');
+
+
+        var hasUserMedia = navigator.webkitGetUserMedia ? true : false;
+
+        if (!hasUserMedia) return createEyeVideo("selfie.mp4");
+
+        var playing = false;
+        var timeupdate = false;
+
+        video.autoplay = true;
+        video.muted = true;
+        video.loop = true;
+
+        // Waiting for these 2 events ensures
+        // there is data in the video
+
+        video.addEventListener('playing', function () {
+            playing = true;
+            checkReady();
+        }, true);
+
+        video.addEventListener('timeupdate', function () {
+            timeupdate = true;
+            checkReady();
+        }, true);
+
+        var constraints = { video: { width: 1280, height: 720 } };
+
+        navigator.mediaDevices.getUserMedia(constraints)
+            .then(function (mediaStream) {
+                video.srcObject = mediaStream;
+                video.onloadedmetadata = function (e) {
+                    video.play();
+                };
+            })
+            .catch(function (err) { console.log(err.name + ": " + err.message); }); // always check for errors at the end.
+
+        function checkReady() {
+            if (playing && timeupdate) {
+                webcamReady = hasUserMedia;
+            }
+        }
+
+        return video;
+    }
+
+    const eyeVideo1 = createEyeVideo("eyeblink_004_lower.mp4");
+    const eyeVideo2 = createEyeVideo("eyeblink_005_lower.mp4");
+    const eyeVideo3 = createEyeVideo("eyeblink_001_lower.mp4");
+    const selfieVid = setupWebcam();
+
+
+    var rd = 0.25; //downscaling SVG for performance
+    svgDoc.size(1920 * rd, 1080 * rd);
+    svgDoc.viewbox(0, 0, 1920 * rd, 1080 * rd);
+
+
+    //making copies of the initial positions/orientations of the SVG letters
+    var letters = svgDoc.children()[1].children();
+    var baseArrays = letters.map(elem => elem.array());
+    var basePositions = letters.map(letter => ({ x: letter.x() * rd, y: letter.y() * rd }));
+    letters.forEach((letter, i) => letter.type == "path" ? replaceVH(i, baseArrays, letters) : null);
+    baseArrays = letters.map(elem => elem.array());
+    baseArrays = baseArrays.map(letter => letter.map(pt => pt.map(e => typeof e === "number" ? e * rd : e))); //mapping letters into scaled SVG coordinates
+    var matricies = letters.map(elem => elem.matrixify());
+    var spin = () => letters.map((p, i) => setTimeout(() => p.animate(500 * 2, "=").rotate(360 * 2), i * 100));
+
+    //getting information on the B letters to set borders for boids and shader: name -> [index, element, boundingBox]
+    var bs = {}
+    letters.map((letter, i) => [i, letter.classes()]).filter(el => el[1].length > 0).forEach(el => bs[el[1]] = [el[0], letters[el[0]], getBoundingBox(baseArrays[el[0]])])
+
+    var swapInfo = randomSwaps(baseArrays, 100);
+
+    //creating img and canvas elements used to import the SVG into a WebGL texture
+    const svgImg = new Image();
+    const svgCanvas = document.createElement("canvas");
+    svgCanvas.width = 1920 * rd;
+    svgCanvas.height = 1080 * rd;
+    svgCanvas.id = "svgCanvas"
+    const svgContext = svgCanvas.getContext("2d");
+
+    var xmlSerializer = new XMLSerializer();
+    var dataUrlLen = 0;
+
+    //rendering the SVG to a canvas element
+    function renderSVGtoCanvas() {
+        var svg = document.querySelector('svg');
+
+        // get svg data
+        var xml = xmlSerializer.serializeToString(svg);
+
+        // make it base64
+        var svg64 = btoa(xml);
+        var b64Start = 'data:image/svg+xml;base64,';
+        dataUrlLen = svg64.length;
+
+        // prepend a "header"
+        var image64 = b64Start + svg64;
+
+        // set it as the source of the img element
+        svgImg.src = image64;
+
+        // draw the image onto the canvas
+        svgImg.onload = () => svgContext.drawImage(svgImg, 0, 0);
+    }
+
+    var flock;
+    var width = 1920 * rd, height = 1080 * rd;
+    var vertBorder = 272 * rd, horBorder = 125 * rd;
+    var gridX = 16, gridY = 5, gridSize = 104 * rd;
+    var p5Ease = new p5.Ease();
+    var ease = x => p5Ease.normalizedLogitSigmoid(x, .6);
+    function pointEase(p1, p2, x) {
+        let deltX = p2.x - p1.x;
+        let deltY = p2.y - p1.y;
+        let easeVal = ease(x);
+        let x2 = p1.x + deltX * easeVal;
+        let y2 = p1.y + deltY * easeVal;
+        return { x: x2, y: y2 };
+    }
+
+    function randCell(returnSVGCoord) {
+        let coordMult = returnSVGCoord ? gridSize : 1;
+        let rfl = n => Math.floor(Math.random() * n);
+        return { x: (1 + rfl(gridX - 1)) * coordMult, y: (1 + rfl(gridY - 1)) * coordMult };
+    }
+
+    function cellToSVGCoord(gridX, gridY) {
+        return { x: horBorder + gridX * gridSize, y: vertBorder + gridY * gridSize };
+    }
+
+    function moveBoidSVG(boid, xy) {
+        boid.position.x = xy.x;
+        boid.position.y = xy.y;
+        boid.render();
+    }
+
+    function moveBoidCell(boid, cellXY) {
+        let xy = cellToSVGCoord(cellXY.x, cellXY.y);
+        moveBoidSVG(boid, xy);
+    }
+
+    function easePoint(p1, p2, x) {
+        return mix(p1, p2, ease(x));
+    }
+
+    class easeTask {
+        constructor(state, startTime, duration, easeFunc, postFunc) {
+            this.state = state;
+            this.startTime = startTime;
+            this.duration = duration;
+            this.easeFunc = easeFunc;
+            this.lastEaseTime = 0;
+
+            //todo - this probably doesn't make sense - at best, you can only redo the current task (similar to supercollider repeats)
+            this.postFunc = postFunc ? () => null : postFunc;
+        }
+
+        eval(time) {
+            var easeTime = Math.min(Math.max((time - this.startTime) / this.duration, 0), 1);
+            this.lastEaseTime = easeTime;
+            var easeFuncVal = this.easeFunc(this.state, easeTime);
+            if (lastEaseTime == 1) this.postFunc();
+            return easeFuncVal;
+        }
+
+        get isDone() {
+            return this.lastEaseTime == 1;
+        }
+    }
+
+    //empty p5 setup function
+    function setup() {
+        var width = 1920 * rd, height = 1080 * rd;
+        flock = new Flock();
+        // Add an initial set of boids into the system
+        for (let i = 0; i < 20; i++) {
+            let rc = randCell(true);
+            var svgCreator = r => svgDoc.circle(r).center(horBorder + rc.x, vertBorder + rc.y).fill("rgb(" + ((i + 1) * 10 + 4) + ",0,255)");
+            let b = new Boid(horBorder + rc.x, vertBorder + rc.y, svgCreator, width, height, { x: horBorder, y: vertBorder }, gridSize, rd * 3);
+            flock.addBoid(b);
+        }
+        noLoop();
+        // flock.run();
+        //todo - create  initial easeTask - 
+    }
+
+    function shuffle(a) {
+        var j, x, i;
+        for (i = a.length - 1; i > 0; i--) {
+            j = Math.floor(Math.random() * (i + 1));
+            x = a[i];
+            a[i] = a[j];
+            a[j] = x;
+        }
+        return a;
+    }
+
+    function randSetSample(n, k) {
+        let inds = Array.from(new Array(n), (e, i) => i);
+        let shuffleArr = shuffle(inds);
+        return shuffleArr.slice(0, k);
+    }
+
+
+
+
+    //playing with SVG colors
+    svgDoc.children()[0].fill("black");
+    letters.map(letter => letter.fill("white"));
+
+    var refTime = 0;
+    var time = Date.now() / 1000;
+    var speedScale = (time) => 1;
+
+    //p5 draw loop to do the animation. Am only using p5 as a quick way to get a draw loop - this could be 
+    //replaced to just use requestAnimationFrame() later
+    frameCount = 0;
+    function draw() {
+        var width = 1920 * rd, height = 1080 * rd;
+
+        var refTime = Date.now() / 1000;
+        var increment = Date.now() / 1000 - time;
+        time += increment * speedScale(refTime);
+
+        var transformFunc = xy => normExec(xy, xyN => {
+            var warp = coordWarp(xyN, time / 4, .5, 20);
+            var cent = { x: .5, y: .5 };
+            var diag = .5;
+            // warp = mix(cent, warp, (1-(diag-distance(warp, cent))/diag)**2);
+            warp = mix(xyN, warp, sinN(time + xyN.x * PI * 10.5) * 3 * sinN(time + xyN.x * PI));
+            return warp;
+        }, width, height);
+
+        // transformFunc = a => a;
+        var foldRes = 50;// + 50 * sinN(time/10);
+        var t2 = time / 10;
+        // transformFunc = xy => ({x: xy.x*.7 + sinN(t2+xy.x/width*PI*foldRes)*0.3*width*sinN(time/1.2), 
+        //                         y: xy.y*.7 + cosN(t2+xy.y/height*PI*foldRes)*0.3*height*sinN(time/1.4)});
+        // transformFunc = a => ({x:a.x * sinN(time), y: a.y * sinN(time)});
+
+        // if(frameCount%3 == 0 && swapInfo.swaps.length > 0){
+        //     var swapPoints = swapInfo.swaps.pop();
+        //     shapeArraySwap(swapPoints[0], swapPoints[1], swapInfo.shapeArrays);
+        // }
+
+        letters.forEach(function (letter, i) {
+            var m = matricies[i];
+            var phase = i / letters.length * PI * 2;// * (1 + 10 * sinN(time / 3.3));
+
+            var mapFunction = letter.type == "path" ? pathCoordinateTransform : polygonCoordinateTransform;
+            var shapeArray = mapFunction(baseArrays[i], xyN => mix(xyN, transformFunc(xyN), sliders[1] / 127));
+            // letter.plot(shapeArray);
+
+            var frameBox = { x: 0, y: 0, width: width, height: height };
+            var bbox = getBoundingBox(baseArrays[i]);
+            var xy2 = mix(bbox, transformFunc(bbox), sliders[5] / 127);
+            bbox.x = xy2.x;
+            bbox.y = xy2.y;
+            letter.plot(putLetterInBox(shapeArray, bbox));
+
+            // if(frameCount%3 == 0 && swapInfo.swaps.length >= 0){
+            //     letter.plot(swapInfo.shapeArrays[i]);
+            // }
+            // letter.fill({ opacity: sinN(time*4 + phase) });
+
+        });
+
+        frameCount++
+
+        //render the updated SVG to a canvas
+        renderSVGtoCanvas();
+        flock.run();
+        /*
+        if(easeTask.isFinished){
+            let boids = randSetSample(flock.boids.length, 3);
+
+            // select directions (filter out occupied slots, and make sure two boids don't move into same slot)
+
+
+            create set of start/end points
+            create interpolation function for seleced boids+points
+            initiate new easeTask
+
+        } else {
+            easeTask.eval(time)
+        }
+
+        */
+    }
+</script>
+<script src="glSetup.js"></script>
+
+</html>
