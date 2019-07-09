@@ -3,20 +3,20 @@ glCanvas.width = 1920*rd*2;
 glCanvas.height = 1080*rd*2;
 
 //can enter/exit fullscreen display with spacebar
-document.addEventListener("keyup", (event) => {
-    console.log("key", event);
-    if (event.code == "Space") {
-        toggleFullScreen();
-    }
-    if (event.code == "KeyR") {
-        const headerFSreq = $.get("header.frag");
-        const fsReq = $.get("eyebeamSVG.glsl");
-        Promise.all([headerFSreq, fsReq]).then( shaderArray => {
-            console.log("shaderArray", shaderArray);
-            programInfo = twgl.createProgramInfo(gl, ["vs", shaderArray[0]+shaderArray[1]]);
-        });
-    }
-});
+// document.addEventListener("keyup", (event) => {
+//     console.log("key", event);
+//     if (event.code == "Space") {
+//         toggleFullScreen();
+//     }
+//     if (event.code == "KeyR") {
+//         const headerFSreq = $.get("header.frag");
+//         const fsReq = $.get("eyebeamSVG.glsl");
+//         Promise.all([headerFSreq, fsReq]).then( shaderArray => {
+//             console.log("shaderArray", shaderArray);
+//             programInfo = twgl.createProgramInfo(gl, ["vs", shaderArray[0]+shaderArray[1]]);
+//         });
+//     }
+// });
 function toggleFullScreen() {
     if (!document.fullscreenElement) {
         glCanvas.requestFullscreen();

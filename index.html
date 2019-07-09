@@ -14,6 +14,19 @@
     <script type="text/javascript" src="FPSMeter.js"></script>
     <script type="text/javascript" src="dat.gui.js"></script>
     <script type="text/javascript" src="boids.js"></script>
+    <script type="text/javascript" src="ace_src/ace.js"  charset="utf-8"></script>
+    <script type="text/javascript" src="ace_src/theme-twilight.js" charset="utf-8"></script>
+    <style>
+        #editor1 {
+            position: absolute; 
+            background: transparent;
+            left: 0px; 
+            top: 10px;
+            bottom: 40px;
+            right: 10px;
+            text-shadow: rgba( 0, 0, 0, 1 ) 0px 1px 1px;
+        }
+    </style>
 </head>
 
 <body style="background-color: white;">
@@ -79,6 +92,7 @@
         </svg>
     </div>
     <canvas id="glCanvas" width="800" height="600" style="height: 100%; width: 100%; position: absolute;"></canvas>
+    <div id="editor1" style="position: absolute; width: 100%; height: 100%;"></div>
 </body>
 <script id="vs" type="notjs">
 #version 300 es
@@ -451,5 +465,10 @@ fragColor = col;
     }
 </script>
 <script src="glSetup.js"></script>
+<script>
+    var editor1 = ace.edit("editor1");
+    editor1.session.setMode("ace/mode/glsl");
+    editor1.setTheme("ace/theme/monokaiCustom");
 
+</script>
 </html>
