@@ -18,7 +18,7 @@ color: #F8F8F2\
 color: #F8F8F0\
 }\
 .ace-monokai .ace_marker-layer .ace_selection {\
-background: #49483E\
+background: rgba(128, 255, 128, .4);\
 }\
 .ace-monokai.ace_multiselect .ace_selection.ace_start {\
 box-shadow: 0 0 3px 0px #272822;\

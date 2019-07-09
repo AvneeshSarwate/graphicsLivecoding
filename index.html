@@ -17,7 +17,7 @@
     <script type="text/javascript" src="ace_src/ace.js"  charset="utf-8"></script>
     <script type="text/javascript" src="ace_src/theme-twilight.js" charset="utf-8"></script>
     <style>
-        #editor1 {
+        .codeEditor {
             position: absolute; 
             background: transparent;
             left: 0px; 
@@ -92,7 +92,9 @@
         </svg>
     </div>
     <canvas id="glCanvas" width="800" height="600" style="height: 100%; width: 100%; position: absolute;"></canvas>
-    <div id="editor1" style="position: absolute; width: 100%; height: 100%;"></div>
+    <div id="editor0" class="codeEditor" style="position: absolute; width: 100%; height: 100%;"></div>
+    <div id="editor1" class="codeEditor" style="position: absolute; width: 100%; height: 100%;"></div>
+    <div id="editor2" class="codeEditor" style="position: absolute; width: 100%; height: 100%;"></div>
 </body>
 <script id="vs" type="notjs">
 #version 300 es
@@ -468,11 +470,51 @@ fragColor = col;
 <script>
     var langTools = ace.require("ace/ext/language_tools");
     // langTools.setCompleters([langTools.snippetCompleter, langTools.keyWordCompleter])
-    var editor1 = ace.edit("editor1");
-    editor1.session.setMode("ace/mode/glsl");
-    editor1.setTheme("ace/theme/monokaiCustom");
-    editor1.setDisplayIndentGuides(false);
-    editor1.setShowPrintMargin(false);
+    var editors = [null, null, null, null, null];
+    function initShaderEditor(editorIndex){
+        var editorId = "editor"+editorIndex;
+        var editor = ace.edit(editorId);
+        editor.session.setMode("ace/mode/glsl");
+        editor.setTheme("ace/theme/monokaiCustom");
+        editor.setDisplayIndentGuides(false);
+        editor.setShowPrintMargin(false);
+        editors[editorIndex] = {editor, id: editorId};
+        editor.setValue("\n\n\n\n\n" + editorId);
+        $("#"+editorId).hide();
+    }
+
+    function initJSEditor(editorIndex){
+        var editorId = "editor"+editorIndex;
+        var editor = ace.edit(editorId);
+        editor.session.setMode("ace/mode/javascript");
+        editor.setTheme("ace/theme/monokaiCustom");
+        editor.setDisplayIndentGuides(false);
+        editor.setShowPrintMargin(false);
+        editors[editorIndex] = {editor, id: editorId};
+        editor.setValue("\n\n\n\n\n" + editorId);
+        $("#"+editorId).hide();
+    }
+
+    function showEditor(index){
+        if(!editors[index]) return;
+        editors.forEach((editorInfo, ind) => {
+            if(editorInfo) {
+                if(index != ind) $("#"+editorInfo.id).hide();
+                else $("#"+editorInfo.id).show();
+            }
+        });
+        
+    }
+
+    initJSEditor(0);
+    initShaderEditor(1);
+    initShaderEditor(2);
+
+    showEditor(0);
+
+
+
+    
     // editor1.session.setTabSize(4);
     // editor1.session.setUseSoftTabs(true);
     // editor1.setOptions({
