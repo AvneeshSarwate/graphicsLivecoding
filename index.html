@@ -512,7 +512,9 @@ fragColor = col;
              clearTimeout(editorInfo.timeout);
              setTimeout(() => {
                 editorInfo.text = editorInfo.editor.getValue();
-                let newProgram = twgl.createProgramInfo(gl, ["vs", headerShader+editorInfo.text]);
+                let newProgram = twgl.createProgramInfo(gl, ["vs", headerShader+editorInfo.text], (err)=>{
+                    console.log(err);
+                });
                 if(editorIndex === 1 && newProgram){
                     programInfo = newProgram;
                 }
