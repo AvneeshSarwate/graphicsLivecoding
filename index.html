@@ -128,6 +128,30 @@ col = texture(svgFrame, uv);
 fragColor = col;
 }
 </script>
+<script id="fs2" type="notjs">
+#version 300 es
+precision mediump float;
+
+uniform vec2 resolution;
+uniform float time;
+uniform sampler2D lastStage;
+
+out vec4 fragColor;
+void main() {
+vec2 uv = gl_FragCoord.xy / resolution;
+float color = 0.0;
+// lifted from glslsandbox.com
+color += sin( uv.x * cos( time / 3.0 ) * 60.0 ) + cos( uv.y * cos( time / 2.80 ) * 10.0 );
+color += sin( uv.y * sin( time / 2.0 ) * 40.0 ) + cos( uv.x * sin( time / 1.70 ) * 40.0 );
+color += sin( uv.x * sin( time / 1.0 ) * 10.0 ) + sin( uv.y * sin( time / 3.50 ) * 80.0 );
+color *= sin( time / 10.0 ) * 0.5;
+
+vec4 col = vec4( vec3( color * 0.5, sin( color + time / 2.5 ) * 0.75, color ), 1.0 );
+col = texture(lastStage, uv)*(sin(time)+1.)/2.;
+
+fragColor = col;
+}
+</script>
 <script src="midiHandling.js"></script>
 <script src="svgAndP5transforms.js"></script>
 <script type="text/javascript">
@@ -471,6 +495,7 @@ fragColor = col;
     var langTools = ace.require("ace/ext/language_tools");
     // langTools.setCompleters([langTools.snippetCompleter, langTools.keyWordCompleter])
     var editors = [null, null, null, null, null];
+    var defaultShaders = ["fs", "fs2"]
     function initShaderEditor(editorIndex){
         var editorId = "editor"+editorIndex;
         var editor = ace.edit(editorId);
@@ -478,9 +503,24 @@ fragColor = col;
         editor.setTheme("ace/theme/monokaiCustom");
         editor.setDisplayIndentGuides(false);
         editor.setShowPrintMargin(false);
-        editors[editorIndex] = {editor, id: editorId};
-        editor.setValue("\n\n\n\n\n" + editorId);
+        var shaderText = $("#" + defaultShaders[Math.sign(editorIndex-1)]).html(); //assume buffer 0 is p5, 1 is baseShader, 2... are post processing 
+        editors[editorIndex] = {editor, id: editorId, text: shaderText, visible: false, lang: "frac", timeout: null};
+        editor.setValue(shaderText, -1); 
         $("#"+editorId).hide();
+        editor.session.on("change", (evt)=>{
+             let editorInfo = editors[editorIndex];
+             clearTimeout(editorInfo.timeout);
+             setTimeout(() => {
+                editorInfo.text = editorInfo.editor.getValue();
+                let newProgram = twgl.createProgramInfo(gl, ["vs", headerShader+editorInfo.text]);
+                if(editorIndex === 1 && newProgram){
+                    programInfo = newProgram;
+                }
+                if(editorIndex === 2 && newProgram){
+                    programInfo_stage2 = newProgram;
+                }
+             }, 200) 
+        });
     }
 
     function initJSEditor(editorIndex){
@@ -490,17 +530,24 @@ fragColor = col;
         editor.setTheme("ace/theme/monokaiCustom");
         editor.setDisplayIndentGuides(false);
         editor.setShowPrintMargin(false);
-        editors[editorIndex] = {editor, id: editorId};
+        editors[editorIndex] = {editor, id: editorId, shaderText: "\n\n\n\n\n" + editorId, visible: false, lang: "js"};
         editor.setValue("\n\n\n\n\n" + editorId);
         $("#"+editorId).hide();
+        
     }
 
     function showEditor(index){
         if(!editors[index]) return;
         editors.forEach((editorInfo, ind) => {
             if(editorInfo) {
-                if(index != ind) $("#"+editorInfo.id).hide();
-                else $("#"+editorInfo.id).show();
+                if(index != ind) {
+                    $("#"+editorInfo.id).hide();
+                    editorInfo.visible = false;
+                }
+                else {
+                    $("#"+editorInfo.id).show();
+                    editorInfo.visible = true;
+                }
             }
         });
         
@@ -510,7 +557,7 @@ fragColor = col;
     initShaderEditor(1);
     initShaderEditor(2);
 
-    showEditor(0);
+    showEditor(1);
 
 
 
