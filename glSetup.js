@@ -1,6 +1,6 @@
 const glCanvas = document.querySelector("#glCanvas");
-glCanvas.width = 1920*rd*2;
-glCanvas.height = 1080*rd*2;
+glCanvas.width = 1920 * rd * 2;
+glCanvas.height = 1080 * rd * 2;
 
 //can enter/exit fullscreen display with spacebar
 // document.addEventListener("keyup", (event) => {
@@ -43,7 +43,7 @@ const arrays = {
 };
 const bufferInfo = twgl.createBufferInfoFromArrays(gl, arrays);
 
-let textures = {}; 
+let textures = {};
 
 let frameBufferIndex = 0;
 
@@ -71,8 +71,8 @@ function render(time) {
         backbuffer: frameBuffers[frameBufferIndex].attachments[0],
         circlePositions: flock.boids.map(b => [b.position.x, b.position.y]).flat(),
         circleRadii: flock.boids.map(b => b.svgElement.ry()),
-        cameraBlend: sliders[2]/127,
-        feedbackRotation: sliders[1]/127,
+        cameraBlend: sliders[2] / 127,
+        feedbackRotation: sliders[1] / 127,
         rd: rd
     };
 
@@ -80,15 +80,15 @@ function render(time) {
     twgl.setBuffersAndAttributes(gl, programInfo, bufferInfo);
     twgl.setUniforms(programInfo, uniforms);
 
-    twgl.bindFramebufferInfo(gl, frameBuffers[(frameBufferIndex+1)%2]);
+    twgl.bindFramebufferInfo(gl, frameBuffers[(frameBufferIndex + 1) % 2]);
     twgl.drawBufferInfo(gl, bufferInfo);
 
     const uniforms_stage2 = {
         time: time * 0.001,
         resolution: [gl.canvas.width, gl.canvas.height],
-        lastStage: frameBuffers[(frameBufferIndex+1)%2].attachments[0],
-        warpSlider: sliders[3]/127,
-        baseCutSlider: sliders[4]/127
+        lastStage: frameBuffers[(frameBufferIndex + 1) % 2].attachments[0],
+        warpSlider: sliders[3] / 127,
+        baseCutSlider: sliders[4] / 127
     }
 
     gl.useProgram(programInfo_stage2.program);
@@ -98,12 +98,12 @@ function render(time) {
     twgl.bindFramebufferInfo(gl);
     twgl.drawBufferInfo(gl, bufferInfo);
 
-    frameBufferIndex = (frameBufferIndex+1)%2;
-    
+    frameBufferIndex = (frameBufferIndex + 1) % 2;
+
     redraw();
     fpsMeter.tick();
     requestAnimationFrame(render);
-    
+
 }
 
 const headerFSreq = $.get("header.frag");
@@ -115,22 +115,86 @@ let programInfo_stage2 = twgl.createProgramInfo(gl, ["vs", "fs2"]);
 let headerShader;
 
 console.log("setting up promises", eyeVideo1.play());
-Promise.all([headerFSreq, fsReq, fsReq2, eyeVideo1.play(), eyeVideo2.play(), eyeVideo3.play(), selfieVid.play()]).then( shaderArray => {
+Promise.all([headerFSreq, fsReq, fsReq2, eyeVideo1.play(), eyeVideo2.play(), eyeVideo3.play(), selfieVid.play()]).then(shaderArray => {
     console.log("shaderArray", shaderArray);
     headerShader = shaderArray[0];
 
-    programInfo = twgl.createProgramInfo(gl, ["vs", shaderArray[0]+shaderArray[1]]);
-    programInfo_stage2 = twgl.createProgramInfo(gl, ["vs", shaderArray[0]+shaderArray[2]]);
+    programInfo = twgl.createProgramInfo(gl, ["vs", shaderArray[0] + shaderArray[1]]);
+    programInfo_stage2 = twgl.createProgramInfo(gl, ["vs", shaderArray[0] + shaderArray[2]]);
 
     editors[1].editor.setValue(shaderArray[1], -1);
     editors[2].editor.setValue(shaderArray[2], -1);
 
     textures = twgl.createTextures(gl, {
-        svgFrame: {src: svgCanvas}, 
-        eyeVideo1: {src: eyeVideo1},
-        eyeVideo2: {src: eyeVideo2},
-        eyeVideo3: {src: eyeVideo3},
-        selfieVid: {src: selfieVid}
+        svgFrame: { src: svgCanvas },
+        eyeVideo1: { src: eyeVideo1 },
+        eyeVideo2: { src: eyeVideo2 },
+        eyeVideo3: { src: eyeVideo3 },
+        selfieVid: { src: selfieVid }
     });
     requestAnimationFrame(render);
-}).catch(function(err){console.log(err)});
+}).catch(function (err) { console.log(err) });
+
+
+var langTools = ace.require("ace/ext/language_tools");
+// langTools.setCompleters([langTools.snippetCompleter, langTools.keyWordCompleter])
+var editors = [null, null, null, null, null];
+var defaultShaders = ["fs", "fs2"]
+function initShaderEditor(editorIndex) {
+    var editorId = "editor" + editorIndex;
+    var editor = ace.edit(editorId);
+    editor.session.setMode("ace/mode/glsl");
+    editor.setTheme("ace/theme/monokaiCustom");
+    editor.setDisplayIndentGuides(false);
+    editor.setShowPrintMargin(false);
+    var shaderText = $("#" + defaultShaders[Math.sign(editorIndex - 1)]).html(); //assume buffer 0 is p5, 1 is baseShader, 2... are post processing 
+    editors[editorIndex] = { editor, id: editorId, text: shaderText, visible: false, lang: "frac", timeout: null };
+    editor.setValue(shaderText, -1);
+    $("#" + editorId).hide();
+    editor.session.on("change", (evt) => {
+        let editorInfo = editors[editorIndex];
+        clearTimeout(editorInfo.timeout);
+        setTimeout(() => {
+            editorInfo.text = editorInfo.editor.getValue();
+            let newProgram = twgl.createProgramInfo(gl, ["vs", headerShader + editorInfo.text], (err) => {
+                console.log(err);
+            });
+            if (editorIndex === 1 && newProgram) {
+                programInfo = newProgram;
+            }
+            if (editorIndex === 2 && newProgram) {
+                programInfo_stage2 = newProgram;
+            }
+        }, 200)
+    });
+}
+
+function initJSEditor(editorIndex) {
+    var editorId = "editor" + editorIndex;
+    var editor = ace.edit(editorId);
+    editor.session.setMode("ace/mode/javascript");
+    editor.setTheme("ace/theme/monokaiCustom");
+    editor.setDisplayIndentGuides(false);
+    editor.setShowPrintMargin(false);
+    editors[editorIndex] = { editor, id: editorId, shaderText: "\n\n\n\n\n" + editorId, visible: false, lang: "js" };
+    editor.setValue("\n\n\n\n\n" + editorId);
+    $("#" + editorId).hide();
+
+}
+
+function showEditor(index) {
+    if (!editors[index]) return;
+    editors.forEach((editorInfo, ind) => {
+        if (editorInfo) {
+            if (index != ind) {
+                $("#" + editorInfo.id).hide();
+                editorInfo.visible = false;
+            }
+            else {
+                $("#" + editorInfo.id).show();
+                editorInfo.visible = true;
+            }
+        }
+    });
+
+}

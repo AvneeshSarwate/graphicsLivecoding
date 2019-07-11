@@ -165,9 +165,7 @@ fragColor = col;
     var propToSliderIndex = [['letterTwist', 1], ['cameraBlend', 2], ['centerWarp', 3], ['letterMotion', 5]];
     var controllers = propToSliderIndex.map(ps => [gui.add(controllerProps, ps[0], 0, 1).step(0.01), ps[1]]).forEach(cs => cs[0].onChange(v => sliders[cs[1]] = v * 127));
 
-    var blobVideoURLs = {};
-
-    function createEyeVideo(url) {
+    function createVideo(url) {
         var req = new XMLHttpRequest();
         req.open('GET', url, true);
         req.responseType = 'blob';
@@ -203,7 +201,7 @@ fragColor = col;
 
         var hasUserMedia = navigator.webkitGetUserMedia ? true : false;
 
-        if (!hasUserMedia) return createEyeVideo("selfie.mp4");
+        if (!hasUserMedia) return createVideo("selfie.mp4");
 
         var playing = false;
         var timeupdate = false;
@@ -211,19 +209,6 @@ fragColor = col;
         video.autoplay = true;
         video.muted = true;
         video.loop = true;
-
-        // Waiting for these 2 events ensures
-        // there is data in the video
-
-        video.addEventListener('playing', function () {
-            playing = true;
-            checkReady();
-        }, true);
-
-        video.addEventListener('timeupdate', function () {
-            timeupdate = true;
-            checkReady();
-        }, true);
 
         var constraints = { video: { width: 1280, height: 720 } };
 
@@ -236,22 +221,16 @@ fragColor = col;
             })
             .catch(function (err) { console.log(err.name + ": " + err.message); }); // always check for errors at the end.
 
-        function checkReady() {
-            if (playing && timeupdate) {
-                webcamReady = hasUserMedia;
-            }
-        }
-
         return video;
     }
 
-    const eyeVideo1 = createEyeVideo("eyeblink_004_lower.mp4");
-    const eyeVideo2 = createEyeVideo("eyeblink_005_lower.mp4");
-    const eyeVideo3 = createEyeVideo("eyeblink_001_lower.mp4");
+    const eyeVideo1 = createVideo("eyeblink_004_lower.mp4");
+    const eyeVideo2 = createVideo("eyeblink_005_lower.mp4");
+    const eyeVideo3 = createVideo("eyeblink_001_lower.mp4");
     const selfieVid = setupWebcam();
 
 
-    var rd = 0.25; //downscaling SVG for performance
+    var rd = 0.25; //downscaling SVG for performance (rd stand for resolutionDowngrade)
     svgDoc.size(1920 * rd, 1080 * rd);
     svgDoc.viewbox(0, 0, 1920 * rd, 1080 * rd);
 
@@ -282,7 +261,7 @@ fragColor = col;
 
     var xmlSerializer = new XMLSerializer();
     var dataUrlLen = 0;
-
+    eval("var testVar = 5; var testVar2 = 10;");
     //rendering the SVG to a canvas element
     function renderSVGtoCanvas() {
         var svg = document.querySelector('svg');
@@ -492,69 +471,6 @@ fragColor = col;
 </script>
 <script src="glSetup.js"></script>
 <script>
-    var langTools = ace.require("ace/ext/language_tools");
-    // langTools.setCompleters([langTools.snippetCompleter, langTools.keyWordCompleter])
-    var editors = [null, null, null, null, null];
-    var defaultShaders = ["fs", "fs2"]
-    function initShaderEditor(editorIndex){
-        var editorId = "editor"+editorIndex;
-        var editor = ace.edit(editorId);
-        editor.session.setMode("ace/mode/glsl");
-        editor.setTheme("ace/theme/monokaiCustom");
-        editor.setDisplayIndentGuides(false);
-        editor.setShowPrintMargin(false);
-        var shaderText = $("#" + defaultShaders[Math.sign(editorIndex-1)]).html(); //assume buffer 0 is p5, 1 is baseShader, 2... are post processing 
-        editors[editorIndex] = {editor, id: editorId, text: shaderText, visible: false, lang: "frac", timeout: null};
-        editor.setValue(shaderText, -1); 
-        $("#"+editorId).hide();
-        editor.session.on("change", (evt)=>{
-             let editorInfo = editors[editorIndex];
-             clearTimeout(editorInfo.timeout);
-             setTimeout(() => {
-                editorInfo.text = editorInfo.editor.getValue();
-                let newProgram = twgl.createProgramInfo(gl, ["vs", headerShader+editorInfo.text], (err)=>{
-                    console.log(err);
-                });
-                if(editorIndex === 1 && newProgram){
-                    programInfo = newProgram;
-                }
-                if(editorIndex === 2 && newProgram){
-                    programInfo_stage2 = newProgram;
-                }
-             }, 200) 
-        });
-    }
-
-    function initJSEditor(editorIndex){
-        var editorId = "editor"+editorIndex;
-        var editor = ace.edit(editorId);
-        editor.session.setMode("ace/mode/javascript");
-        editor.setTheme("ace/theme/monokaiCustom");
-        editor.setDisplayIndentGuides(false);
-        editor.setShowPrintMargin(false);
-        editors[editorIndex] = {editor, id: editorId, shaderText: "\n\n\n\n\n" + editorId, visible: false, lang: "js"};
-        editor.setValue("\n\n\n\n\n" + editorId);
-        $("#"+editorId).hide();
-        
-    }
-
-    function showEditor(index){
-        if(!editors[index]) return;
-        editors.forEach((editorInfo, ind) => {
-            if(editorInfo) {
-                if(index != ind) {
-                    $("#"+editorInfo.id).hide();
-                    editorInfo.visible = false;
-                }
-                else {
-                    $("#"+editorInfo.id).show();
-                    editorInfo.visible = true;
-                }
-            }
-        });
-        
-    }
-
     initJSEditor(0);
     initShaderEditor(1);
     initShaderEditor(2);
