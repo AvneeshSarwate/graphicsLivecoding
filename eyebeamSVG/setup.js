@@ -178,6 +178,7 @@ var frameCount = 0;
 
 
 var assetPromises = [eyeVideo1, eyeVideo2, eyeVideo3, selfieVid].map(v => v.play());
+var postPromiseAssets = [eyeVideo1, eyeVideo2, eyeVideo3, selfieVid];
 
 //use twgl to create textures object here
 function handleAssetsAndCreateTextures(eyeVideo1, eyeVideo2, eyeVideo3, selfieVid){

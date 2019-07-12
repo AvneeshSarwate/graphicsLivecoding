@@ -130,11 +130,12 @@ async function loadShadersAndAssets(){
 
     globalEval(shaderArray[3]);
     globalEval(shaderArray[4]);
+    draw = drawing;
     globalEval(shaderArray[5]);
 
     var assetArray = await Promise.all(assetPromises);
 
-    textures = handleAssetsAndCreateTextures(...assetArray);
+    textures = handleAssetsAndCreateTextures(...postPromiseAssets);
     
     console.log("shaderArray", shaderArray);
     headerShader = shaderArray[0];
