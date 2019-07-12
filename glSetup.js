@@ -107,6 +107,7 @@ Promise.all([headerFSreq, fsReq, fsReq2, setupPromise, drawingPromise, controlle
     globalEval(shaderArray[4]);
     globalEval(shaderArray[5]);
 
+    //TODO - use async/await or another promise to make sure these finish before requestAnimationFrame gets called
     Promise.all(assetPromises).then(assetArray => {
         textures = handleAssetsAndCreateTextures(...assetArray);
     });
@@ -120,7 +121,7 @@ Promise.all([headerFSreq, fsReq, fsReq2, setupPromise, drawingPromise, controlle
     editors[1].editor.setValue(shaderArray[1], -1);
     editors[2].editor.setValue(shaderArray[2], -1);
 
-    requestAnimationFrame(render);
+    // requestAnimationFrame(render); TODO - temporarily moved this to p5 setup, but need a better solution
 }).catch(function (err) { console.log(err) });
 
 

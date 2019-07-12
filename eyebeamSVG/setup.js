@@ -125,6 +125,7 @@ class easeTask {
 
 //empty p5 setup function
 function setup() {
+    console.log("p5 setup called");
     var width = 1920 * rd, height = 1080 * rd;
     flock = new Flock();
     // Add an initial set of boids into the system
@@ -137,6 +138,7 @@ function setup() {
     noLoop();
     // flock.run();
     //todo - create  initial easeTask - 
+    requestAnimationFrame(render)
 }
 
 function shuffle(a) {
