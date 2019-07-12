@@ -3,21 +3,6 @@ const glCanvas = document.querySelector("#glCanvas");
 glCanvas.width = 1920 * rd * 2;
 glCanvas.height = 1080 * rd * 2;
 
-//can enter/exit fullscreen display with spacebar
-// document.addEventListener("keyup", (event) => {
-//     console.log("key", event);
-//     if (event.code == "Space") {
-//         toggleFullScreen();
-//     }
-//     if (event.code == "KeyR") {
-//         const headerFSreq = $.get("header.frag");
-//         const fsReq = $.get("eyebeamSVG.glsl");
-//         Promise.all([headerFSreq, fsReq]).then( shaderArray => {
-//             console.log("shaderArray", shaderArray);
-//             programInfo = twgl.createProgramInfo(gl, ["vs", shaderArray[0]+shaderArray[1]]);
-//         });
-//     }
-// });
 function toggleFullScreen() {
     if (!document.fullscreenElement) {
         glCanvas.requestFullscreen();
@@ -57,9 +42,9 @@ function render() {
     // }
     gl.viewport(0, 0, gl.canvas.width, gl.canvas.height);
 
-    refreshUniforms();
+    refreshUniforms(); //module-callback
 
-    const uniforms = getPass1Uniforms();
+    const uniforms = getPass1Uniforms(); //module-callback
 
     gl.useProgram(programInfo.program);
     twgl.setBuffersAndAttributes(gl, programInfo, bufferInfo);
@@ -68,7 +53,7 @@ function render() {
     twgl.bindFramebufferInfo(gl, frameBuffers[(frameBufferIndex + 1) % 2]);
     twgl.drawBufferInfo(gl, bufferInfo);
 
-    const uniforms_stage2 = getPass2Uniforms();
+    const uniforms_stage2 = getPass2Uniforms(); //module-callback
 
     gl.useProgram(programInfo_stage2.program);
     twgl.setBuffersAndAttributes(gl, programInfo_stage2, bufferInfo);
@@ -105,15 +90,14 @@ async function loadShadersAndAssets(){
 
     var shaderArray = await Promise.all([headerFSreq, fsReq, fsReq2, setupPromise, drawingPromise, controllersPromise]);
 
-    //TODO - figure out why $.get() on JS automatically evals script (tho it seems to do it to global scope, which is good)
     globalEval(shaderArray[3]);
     globalEval(shaderArray[4]);
     draw = drawing;
     globalEval(shaderArray[5]);
 
-    var assetArray = await Promise.all(assetPromises);
+    await Promise.all(assetPromises); //module-callback
 
-    textures = handleAssetsAndCreateTextures(...postPromiseAssets);
+    textures = handleAssetsAndCreateTextures(...postPromiseAssets); //module-callback
     
     console.log("shaderArray", shaderArray);
     headerShader = shaderArray[0];
