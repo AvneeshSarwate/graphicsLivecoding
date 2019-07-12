@@ -93,41 +93,19 @@ const fsReq2 = $.get(moduleName+"/shader2.glsl");
 let programInfo = twgl.createProgramInfo(gl, ["vs", "fs"]);
 let programInfo_stage2 = twgl.createProgramInfo(gl, ["vs", "fs2"]);
 
-let setupPromise = $.get(moduleName+"/setup.js");
-let drawingPromise = $.get(moduleName+"/drawing.js");
-let controllersPromise = $.get(moduleName+"/controllers.js");
+let setupPromise = $.get({url: moduleName+"/setup.js", dataType: "text"});
+let drawingPromise = $.get({url: moduleName+"/drawing.js", dataType: "text"});
+let controllersPromise = $.get({url: moduleName+"/controllers.js", dataType: "text"});
 
 let headerShader;
 
 const globalEval = eval;
 
-// Promise.all([headerFSreq, fsReq, fsReq2, setupPromise, drawingPromise, controllersPromise]).then(shaderArray => {
-    
-//     globalEval(shaderArray[3]);
-//     globalEval(shaderArray[4]);
-//     globalEval(shaderArray[5]);
-
-//     //TODO - use async/await or another promise to make sure these finish before requestAnimationFrame gets called
-//     Promise.all(assetPromises).then(assetArray => {
-//         textures = handleAssetsAndCreateTextures(...assetArray);
-//     });
-    
-//     console.log("shaderArray", shaderArray);
-//     headerShader = shaderArray[0];
-
-//     programInfo = twgl.createProgramInfo(gl, ["vs", shaderArray[0] + shaderArray[1]]);
-//     programInfo_stage2 = twgl.createProgramInfo(gl, ["vs", shaderArray[0] + shaderArray[2]]);
-
-//     editors[1].editor.setValue(shaderArray[1], -1);
-//     editors[2].editor.setValue(shaderArray[2], -1);
-
-//     // requestAnimationFrame(render); TODO - temporarily moved this to p5 setup, but need a better solution
-// }).catch(function (err) { console.log(err) });
-
 async function loadShadersAndAssets(){
 
     var shaderArray = await Promise.all([headerFSreq, fsReq, fsReq2, setupPromise, drawingPromise, controllersPromise]);
 
+    //TODO - figure out why $.get() on JS automatically evals script (tho it seems to do it to global scope, which is good)
     globalEval(shaderArray[3]);
     globalEval(shaderArray[4]);
     draw = drawing;
@@ -143,6 +121,7 @@ async function loadShadersAndAssets(){
     programInfo = twgl.createProgramInfo(gl, ["vs", shaderArray[0] + shaderArray[1]]);
     programInfo_stage2 = twgl.createProgramInfo(gl, ["vs", shaderArray[0] + shaderArray[2]]);
 
+    editors[0].editor.setValue(shaderArray[4], -1);
     editors[1].editor.setValue(shaderArray[1], -1);
     editors[2].editor.setValue(shaderArray[2], -1);
 

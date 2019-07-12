@@ -1,3 +1,5 @@
+console.log("drawing.js eval");
+
 function drawing() {
     var width = 1920 * rd, height = 1080 * rd;
 

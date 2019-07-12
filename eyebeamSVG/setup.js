@@ -1,3 +1,7 @@
+console.log("setup.js eval");
+
+var sliders = Array.from(new Array(127), (e, i) => 0);
+
 //make SVG manipulatable via SVG.js library
 var svgDoc = SVG.adopt($("#eyebeam")[0]);
 
