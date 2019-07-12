@@ -6,7 +6,7 @@ WebMidi.enable(function (err) {
       console.log("WebMidi could not be enabled.", err);
     }
     // Retrieve an input by name, id or index
-    var input = WebMidi.getInputByName("from Max 1");
+    var input = WebMidi.getInputByName("Bus 2");
 
     // Listen for a 'note on' message on all channels
     input.addListener('controlchange', "all", function (e) {

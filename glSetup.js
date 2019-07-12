@@ -49,6 +49,8 @@ let textures = {};
 let frameBufferIndex = 0;
 
 function render() {
+    requestAnimationFrame(render);
+    if(!p5SetupCalled) return;
     // if(twgl.resizeCanvasToDisplaySize(gl.canvas)){
     //     twgl.resizeFramebufferInfo(gl, frameBuffers[0]);
     //     twgl.resizeFramebufferInfo(gl, frameBuffers[1]);
@@ -79,8 +81,6 @@ function render() {
 
     redraw();
     fpsMeter.tick();
-    requestAnimationFrame(render);
-
 }
 
 
@@ -101,16 +101,40 @@ let headerShader;
 
 const globalEval = eval;
 
-Promise.all([headerFSreq, fsReq, fsReq2, setupPromise, drawingPromise, controllersPromise]).then(shaderArray => {
+// Promise.all([headerFSreq, fsReq, fsReq2, setupPromise, drawingPromise, controllersPromise]).then(shaderArray => {
     
+//     globalEval(shaderArray[3]);
+//     globalEval(shaderArray[4]);
+//     globalEval(shaderArray[5]);
+
+//     //TODO - use async/await or another promise to make sure these finish before requestAnimationFrame gets called
+//     Promise.all(assetPromises).then(assetArray => {
+//         textures = handleAssetsAndCreateTextures(...assetArray);
+//     });
+    
+//     console.log("shaderArray", shaderArray);
+//     headerShader = shaderArray[0];
+
+//     programInfo = twgl.createProgramInfo(gl, ["vs", shaderArray[0] + shaderArray[1]]);
+//     programInfo_stage2 = twgl.createProgramInfo(gl, ["vs", shaderArray[0] + shaderArray[2]]);
+
+//     editors[1].editor.setValue(shaderArray[1], -1);
+//     editors[2].editor.setValue(shaderArray[2], -1);
+
+//     // requestAnimationFrame(render); TODO - temporarily moved this to p5 setup, but need a better solution
+// }).catch(function (err) { console.log(err) });
+
+async function loadShadersAndAssets(){
+
+    var shaderArray = await Promise.all([headerFSreq, fsReq, fsReq2, setupPromise, drawingPromise, controllersPromise]);
+
     globalEval(shaderArray[3]);
     globalEval(shaderArray[4]);
     globalEval(shaderArray[5]);
 
-    //TODO - use async/await or another promise to make sure these finish before requestAnimationFrame gets called
-    Promise.all(assetPromises).then(assetArray => {
-        textures = handleAssetsAndCreateTextures(...assetArray);
-    });
+    var assetArray = await Promise.all(assetPromises);
+
+    textures = handleAssetsAndCreateTextures(...assetArray);
     
     console.log("shaderArray", shaderArray);
     headerShader = shaderArray[0];
@@ -121,8 +145,11 @@ Promise.all([headerFSreq, fsReq, fsReq2, setupPromise, drawingPromise, controlle
     editors[1].editor.setValue(shaderArray[1], -1);
     editors[2].editor.setValue(shaderArray[2], -1);
 
-    // requestAnimationFrame(render); TODO - temporarily moved this to p5 setup, but need a better solution
-}).catch(function (err) { console.log(err) });
+    requestAnimationFrame(render);
+}
+
+loadShadersAndAssets();
+
 
 
 var langTools = ace.require("ace/ext/language_tools");

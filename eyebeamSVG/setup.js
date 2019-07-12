@@ -123,8 +123,11 @@ class easeTask {
     }
 }
 
+var p5SetupCalled = false;
+
 //empty p5 setup function
 function setup() {
+    p5SetupCalled = true;
     console.log("p5 setup called");
     var width = 1920 * rd, height = 1080 * rd;
     flock = new Flock();
@@ -138,7 +141,7 @@ function setup() {
     noLoop();
     // flock.run();
     //todo - create  initial easeTask - 
-    requestAnimationFrame(render)
+    // requestAnimationFrame(render)
 }
 
 function shuffle(a) {
@@ -174,7 +177,7 @@ var speedScale = (time) => 1;
 var frameCount = 0;
 
 
-var assetPromises = [eyeVideo1, eyeVideo2, eyeVideo3, selfieVid];
+var assetPromises = [eyeVideo1, eyeVideo2, eyeVideo3, selfieVid].map(v => v.play());
 
 //use twgl to create textures object here
 function handleAssetsAndCreateTextures(eyeVideo1, eyeVideo2, eyeVideo3, selfieVid){
