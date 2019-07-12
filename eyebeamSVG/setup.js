@@ -1,3 +1,75 @@
+var svgString = `
+<div style="display: none">
+        <svg id="eyebeam" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"
+            x="0px" y="0px" viewbox="0 0 1920 1080" style="enable-background:new 0 0 1920 1080;"
+            xml:space="preserve">
+            <rect width="100%" height="100%"></rect>
+            <g xmlns="http://www.w3.org/2000/svg">
+                <polygon points="1197.2,906.6 1221.3,906.6 1246,869.6 1270.7,906.6 1294.7,906.6 1256.7,849.6 1256.7,809.1 1235.2,809.1 
+	1235.2,849.6 " />
+                <path
+                    d="M157.6,809.1h-21l39,97.5H195l39-97.5h-21l-7.8,19.5h-39.9L157.6,809.1z M197.4,848.1l-12.1,30.3l-12.1-30.3H197.4z" />
+                <polygon points="341.5,810.2 244.1,810.2 244.1,829.7 322.1,829.7 322.1,849.2 244.1,849.2 244.1,868.7 322.1,868.7 322.1,888.2 
+	244.1,888.2 244.1,907.7 341.5,907.7 " />
+                <path class="bottomB" d="M659.8,808.6H381.4v0c-16.1,0-29.2,13.1-29.2,29.2c0,8.7,3.8,16.6,9.9,21.9c-3.4,4.8-5.5,10.7-5.5,17
+	c0,15.9,12.6,28.8,28.4,29.2v0h274.9V808.6z M385.8,886.5c-5.4,0-9.7-4.4-9.7-9.7s4.4-9.7,9.7-9.7h259.9v19.5H385.8z M645.7,828.1
+	v19.5H381.4v0c-5.4,0-9.7-4.4-9.7-9.7c0-5.4,4.4-9.7,9.7-9.7H645.7z" />
+                <polygon points="671.5,906 671.5,886.5 1170.2,886.5 1170.2,867.1 671.5,867.1 671.5,847.6 1170.2,847.6 1170.2,828.1 671.5,828.1 
+	671.5,808.6 1189.7,808.6 1189.7,906 " />
+                <polygon
+                    points="725.3,173.9 701.3,173.9 676.6,210.9 651.9,173.9 627.9,173.9 665.9,230.8 665.9,271.3 687.4,271.3 687.4,230.8 " />
+                <path
+                    d="M1767.3,271.9h21l-39-97.5h-19.5l-39,97.5h21l7.8-19.5h39.9L1767.3,271.9z M1727.5,232.9l12.1-30.3l12.1,30.3H1727.5z" />
+                <polygon points="1581,271.9 1678.5,271.9 1678.5,252.4 1600.5,252.4 1600.5,232.9 1678.5,232.9 1678.5,213.4 1600.5,213.4 
+	1600.5,193.9 1678.5,193.9 1678.5,174.4 1581,174.4 " />
+                <path class="topB" d="M1262.7,271.9h278.5v0c16.1,0,29.2-13.1,29.2-29.2c0-8.7-3.8-16.6-9.9-21.9c3.4-4.8,5.5-10.7,5.5-17
+	c0-15.9-12.6-28.8-28.4-29.2v0h-274.9V271.9z M1536.8,193.9c5.4,0,9.7,4.4,9.7,9.7c0,5.4-4.4,9.7-9.7,9.7h-259.9v-19.5H1536.8z
+	 M1276.9,252.4v-19.5h264.4v0c5.4,0,9.7,4.4,9.7,9.7c0,5.4-4.4,9.7-9.7,9.7H1276.9z" />
+                <polygon points="1251.1,174.4 1251.1,193.9 752.4,193.9 752.4,213.4 1251.1,213.4 1251.1,232.9 752.4,232.9 752.4,252.4 
+	1251.1,252.4 1251.1,271.9 732.9,271.9 732.9,174.4 " />
+                <polygon points="27,270.8 27,173.3 619.8,173.3 619.8,192.8 46.5,192.8 46.5,212.3 619.8,212.3 619.8,231.8 46.5,231.8 46.5,251.3 
+	619.8,251.3 619.8,270.8 " />
+                <polygon points="1895.6,809.7 1895.6,907.1 1302.8,907.1 1302.8,887.7 1876.1,887.7 1876.1,868.2 1302.8,868.2 1302.8,848.7 
+	1876.1,848.7 1876.1,829.2 1302.8,829.2 1302.8,809.7 " />
+                <polygon points="1895.6,483.7 1876.1,483.7 1876.1,405.7 1856.6,405.7 1856.6,483.7 1837.1,483.7 1837.1,405.7 1817.6,405.7 
+	1817.6,483.7 1798.1,483.7 1798.1,386.2 1895.6,386.2 " />
+                <path class="rightB" d="M1798.1,494.4v68.2h0c0,16.1,13.1,29.2,29.2,29.2c8.7,0,16.6-3.8,21.9-9.9c4.8,3.4,10.7,5.5,17,5.5
+	c15.9,0,28.8-12.6,29.2-28.4h0v-64.6H1798.1z M1876.1,558.2c0,5.4-4.4,9.7-9.7,9.7s-9.7-4.4-9.7-9.7v-44.3h19.5V558.2z
+	 M1817.6,513.9h19.5v48.7l0,0c0,5.4-4.4,9.7-9.7,9.7c-5.4,0-9.7-4.4-9.7-9.7V513.9z" />
+                <polygon points="1895.6,378.7 1895.6,354.7 1858.6,330 1895.6,305.3 1895.6,281.3 1838.6,319.2 1798.1,319.2 1798.1,340.7 
+	1838.6,340.7 " />
+                <path
+                    d="M1798.1,782.3v21l97.5-39v-19.5l-97.5-39v21l19.5,7.8v39.9L1798.1,782.3z M1837.1,742.4l30.3,12.1l-30.3,12.1V742.4z" />
+                <polygon points="1798.1,697.9 1817.6,697.9 1817.6,619.9 1837.1,619.9 1837.1,697.9 1856.6,697.9 1856.6,619.9 1876.1,619.9 
+	1876.1,697.9 1895.6,697.9 1895.6,600.4 1798.1,600.4 " />
+                <polygon points="1798.1,174.8 1798.1,272.3 1817.6,272.3 1817.6,194.3 1837.1,194.3 1837.1,272.3 1856.6,272.3 1856.6,194.3 
+	1876.1,194.3 1876.1,272.3 1895.6,272.3 1895.6,174.8 " />
+                <polygon
+                    points="27,701.8 27,725.8 64,750.5 27,775.2 27,799.3 84,761.3 124.5,761.3 124.5,739.8 84,739.8 " />
+                <path
+                    d="M124.5,298.3v-21l-97.5,39v19.5l97.5,39v-21l-19.5-7.8v-39.9L124.5,298.3z M85.5,338.1L55.2,326l30.3-12.1V338.1z" />
+                <polygon points="27,596.9 46.5,596.9 46.5,674.8 66,674.8 66,596.9 85.5,596.9 85.5,674.8 105,674.8 105,596.9 124.5,596.9 
+	124.5,694.3 27,694.3 " />
+                <polygon points="124.5,382.7 105,382.7 105,460.6 85.5,460.6 85.5,382.7 66,382.7 66,460.6 46.5,460.6 46.5,382.7 27,382.7 
+	27,480.1 124.5,480.1 " />
+                <polygon points="124.5,905.7 124.5,808.3 105,808.3 105,886.2 85.5,886.2 85.5,808.3 66,808.3 66,886.2 46.5,886.2 46.5,808.3 
+	27,808.3 27,905.7 " />
+                <path class="leftB" d="M124.5,586.1v-68.2h0c0-16.1-13.1-29.2-29.2-29.2c-8.7,0-16.6,3.8-21.9,9.9c-4.8-3.4-10.7-5.5-17-5.5
+	c-15.9,0-28.8,12.6-29.2,28.4h0v64.6H124.5z M46.5,522.3c0-5.4,4.4-9.7,9.7-9.7s9.7,4.4,9.7,9.7v44.3H46.5V522.3z M105,566.6H85.5
+	v-48.7h0c0-5.4,4.4-9.7,9.7-9.7s9.7,4.4,9.7,9.7V566.6z" />
+            </g>
+        </svg>
+    </div>
+`;
+
+function htmlToElement(html) {
+    var template = document.createElement('template');
+    html = html.trim(); // Never return a text node of whitespace as the result
+    template.innerHTML = html;
+    return template.content.firstChild;
+}
+
+document.body.append(htmlToElement(svgString));
 //function to re-structure SVG Paths to make them more manipulation-friendly     
 function removeVHFromPath(pathArray) {
     var currentPos = { x: 0, y: 0 };
@@ -375,8 +447,8 @@ function randSetSample(n, k) {
 svgDoc.children()[0].fill("black");
 letters.map(letter => letter.fill("white"));
 
-var refTime = 0;
-var time = Date.now() / 1000;
+var refTime = Date.now() / 1000;
+var time = 0;
 var speedScale = (time) => 1;
 
 //p5 draw loop to do the animation. Am only using p5 as a quick way to get a draw loop - this could be 
@@ -399,19 +471,21 @@ function handleAssetsAndCreateTextures(eyeVideo1, eyeVideo2, eyeVideo3, selfieVi
 }
 
 function refreshUniforms(){
-    var refTime = Date.now() / 1000;
-    var increment = Date.now() / 1000 - time;
+    var increment = Date.now() / 1000 - refTime;
     time += increment * speedScale(refTime);
     twgl.setTextureFromElement(gl, textures.svgFrame, svgCanvas);
     twgl.setTextureFromElement(gl, textures.eyeVideo1, eyeVideo1);
     twgl.setTextureFromElement(gl, textures.eyeVideo2, eyeVideo2);
     twgl.setTextureFromElement(gl, textures.eyeVideo3, eyeVideo3);
     twgl.setTextureFromElement(gl, textures.selfieVid, selfieVid);
+    refTime = Date.now() / 1000;
 }
+
+var getTime = () => time;
 
 function getPass1Uniforms(){
     return {
-        time: time * 0.001,
+        time: time,
         resolution: [gl.canvas.width, gl.canvas.height],
         svgFrame: textures.svgFrame,
         eyeVideo1: textures.eyeVideo1,
@@ -429,7 +503,7 @@ function getPass1Uniforms(){
 
 function getPass2Uniforms(){
     return {
-        time: time * 0.001,
+        time: time,
         resolution: [gl.canvas.width, gl.canvas.height],
         lastStage: frameBuffers[(frameBufferIndex + 1) % 2].attachments[0],
         warpSlider: sliders[3] / 127,

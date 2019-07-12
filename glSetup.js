@@ -13,6 +13,66 @@ function toggleFullScreen() {
     }
 }
 
+    function createVideo(url) {
+        var req = new XMLHttpRequest();
+        req.open('GET', url, true);
+        req.responseType = 'blob';
+        let eyeVideo = document.createElement("video");
+        eyeVideo.muted = true;
+        eyeVideo.loop = true;
+        // eyeVideo.src = url;
+        eyeVideo.style = "display: none;"
+        req.onload = function () {
+            // Onload is triggered even on 404
+            // so we need to check the status code
+            if (this.status === 200) {
+                var videoBlob = this.response;
+                var vidBlobUrl = URL.createObjectURL(videoBlob);
+                try {
+                    eyeVideo.src = vidBlobUrl;
+                } catch (err) {
+                    console.log("blob exception", err);
+                }
+            }
+        };
+        req.onerror = function () {
+            console.log("error loading blob video for", url);
+        }
+        req.send();
+        return eyeVideo;
+    }
+
+
+    function setupWebcam() {
+        const video = document.createElement('video');
+
+
+        var hasUserMedia = navigator.webkitGetUserMedia ? true : false;
+
+        if (!hasUserMedia) return createVideo("selfie.mp4");
+
+        var playing = false;
+        var timeupdate = false;
+
+        video.autoplay = true;
+        video.muted = true;
+        video.loop = true;
+
+        var constraints = { video: { width: 1280, height: 720 } };
+
+        navigator.mediaDevices.getUserMedia(constraints)
+            .then(function (mediaStream) {
+                video.srcObject = mediaStream;
+                video.onloadedmetadata = function (e) {
+                    video.play();
+                };
+            })
+            .catch(function (err) { console.log(err.name + ": " + err.message); }); // always check for errors at the end.
+
+        return video;
+    }
+    
+
 //setting up 
 const gl = document.querySelector("#glCanvas").getContext("webgl2", {
     alpha: false,
@@ -33,6 +93,8 @@ let textures = {};
 
 let frameBufferIndex = 0;
 
+let debuggingRenderLoop = false;
+
 function render() {
     requestAnimationFrame(render);
     if(!p5SetupCalled) return;
@@ -43,8 +105,10 @@ function render() {
     gl.viewport(0, 0, gl.canvas.width, gl.canvas.height);
 
     refreshUniforms(); //module-callback
-
     const uniforms = getPass1Uniforms(); //module-callback
+    const uniforms_stage2 = getPass2Uniforms(); //module-callback
+    
+    if(debuggingRenderLoop) console.log(uniforms.time, uniforms_stage2.time);
 
     gl.useProgram(programInfo.program);
     twgl.setBuffersAndAttributes(gl, programInfo, bufferInfo);
@@ -52,8 +116,6 @@ function render() {
 
     twgl.bindFramebufferInfo(gl, frameBuffers[(frameBufferIndex + 1) % 2]);
     twgl.drawBufferInfo(gl, bufferInfo);
-
-    const uniforms_stage2 = getPass2Uniforms(); //module-callback
 
     gl.useProgram(programInfo_stage2.program);
     twgl.setBuffersAndAttributes(gl, programInfo_stage2, bufferInfo);
@@ -113,68 +175,3 @@ async function loadShadersAndAssets(){
 }
 
 loadShadersAndAssets();
-
-
-
-var langTools = ace.require("ace/ext/language_tools");
-// langTools.setCompleters([langTools.snippetCompleter, langTools.keyWordCompleter])
-var editors = [null, null, null, null, null];
-var defaultShaders = ["fs", "fs2"]
-function initShaderEditor(editorIndex) {
-    var editorId = "editor" + editorIndex;
-    var editor = ace.edit(editorId);
-    editor.session.setMode("ace/mode/glsl");
-    editor.setTheme("ace/theme/monokaiCustom");
-    editor.setDisplayIndentGuides(false);
-    editor.setShowPrintMargin(false);
-    var shaderText = $("#" + defaultShaders[Math.sign(editorIndex - 1)]).html(); //assume buffer 0 is p5, 1 is baseShader, 2... are post processing 
-    editors[editorIndex] = { editor, id: editorId, text: shaderText, visible: false, lang: "frac", timeout: null };
-    editor.setValue(shaderText, -1);
-    $("#" + editorId).hide();
-    editor.session.on("change", (evt) => {
-        let editorInfo = editors[editorIndex];
-        clearTimeout(editorInfo.timeout);
-        setTimeout(() => {
-            editorInfo.text = editorInfo.editor.getValue();
-            let newProgram = twgl.createProgramInfo(gl, ["vs", headerShader + editorInfo.text], (err) => {
-                console.log(err);
-            });
-            if (editorIndex === 1 && newProgram) {
-                programInfo = newProgram;
-            }
-            if (editorIndex === 2 && newProgram) {
-                programInfo_stage2 = newProgram;
-            }
-        }, 200)
-    });
-}
-
-function initJSEditor(editorIndex) {
-    var editorId = "editor" + editorIndex;
-    var editor = ace.edit(editorId);
-    editor.session.setMode("ace/mode/javascript");
-    editor.setTheme("ace/theme/monokaiCustom");
-    editor.setDisplayIndentGuides(false);
-    editor.setShowPrintMargin(false);
-    editors[editorIndex] = { editor, id: editorId, shaderText: "\n\n\n\n\n" + editorId, visible: false, lang: "js" };
-    editor.setValue("\n\n\n\n\n" + editorId);
-    $("#" + editorId).hide();
-
-}
-
-function showEditor(index) {
-    if (!editors[index]) return;
-    editors.forEach((editorInfo, ind) => {
-        if (editorInfo) {
-            if (index != ind) {
-                $("#" + editorInfo.id).hide();
-                editorInfo.visible = false;
-            }
-            else {
-                $("#" + editorInfo.id).show();
-                editorInfo.visible = true;
-            }
-        }
-    });
-
-}
