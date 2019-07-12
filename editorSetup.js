@@ -41,6 +41,23 @@ function initJSEditor(editorIndex) {
     editors[editorIndex] = { editor, id: editorId, shaderText: "\n\n\n\n\n" + editorId, visible: false, lang: "js" };
     editor.setValue("\n\n\n\n\n" + editorId);
     $("#" + editorId).hide();
+    editor.session.on("change", (evt) => {
+        let editorInfo = editors[editorIndex];
+        clearTimeout(editorInfo.timeout);
+        setTimeout(() => {
+            editorInfo.text = editorInfo.editor.getValue();
+            const lastDraw = draw;
+            try{
+                eval(editorInfo.text);
+                draw = drawing;
+            } catch(e){
+                console.log("p5 draw function error", e.stack);
+                if (e instanceof ReferenceError) {
+                    console.log("p5 draw function referenceerror", e);
+                }
+            }
+        }, 200)
+    });
 
 }
 
@@ -65,4 +82,4 @@ initJSEditor(0);
 initShaderEditor(1);
 initShaderEditor(2);
 
-showEditor(1);
+showEditor(0);
