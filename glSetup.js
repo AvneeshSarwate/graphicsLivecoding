@@ -131,8 +131,8 @@ function render() {
 }
 
 
-
-const moduleName = window.location.href.split("?")[1];
+const moduleString = window.location.href.split("?")[1]
+const moduleName = moduleString ? moduleString : "eyebeamSVG";
 
 const headerFSreq = $.get("header.frag");
 const fsReq = $.get(moduleName+"/shader1.glsl");
