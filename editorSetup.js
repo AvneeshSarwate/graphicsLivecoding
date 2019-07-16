@@ -60,7 +60,7 @@ function initJSEditor(editorIndex) {
     });
 
 }
-
+ 
 function showEditor(index) {
     if (!editors[index]) return;
     editors.forEach((editorInfo, ind) => {
