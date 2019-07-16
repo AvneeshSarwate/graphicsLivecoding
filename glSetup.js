@@ -13,65 +13,65 @@ function toggleFullScreen() {
     }
 }
 
-    function createVideo(url) {
-        var req = new XMLHttpRequest();
-        req.open('GET', url, true);
-        req.responseType = 'blob';
-        let eyeVideo = document.createElement("video");
-        eyeVideo.muted = true;
-        eyeVideo.loop = true;
-        // eyeVideo.src = url;
-        eyeVideo.style = "display: none;"
-        req.onload = function () {
-            // Onload is triggered even on 404
-            // so we need to check the status code
-            if (this.status === 200) {
-                var videoBlob = this.response;
-                var vidBlobUrl = URL.createObjectURL(videoBlob);
-                try {
-                    eyeVideo.src = vidBlobUrl;
-                } catch (err) {
-                    console.log("blob exception", err);
-                }
+function createVideo(url) {
+    var req = new XMLHttpRequest();
+    req.open('GET', url, true);
+    req.responseType = 'blob';
+    let eyeVideo = document.createElement("video");
+    eyeVideo.muted = true;
+    eyeVideo.loop = true;
+    // eyeVideo.src = url;
+    eyeVideo.style = "display: none;"
+    req.onload = function () {
+        // Onload is triggered even on 404
+        // so we need to check the status code
+        if (this.status === 200) {
+            var videoBlob = this.response;
+            var vidBlobUrl = URL.createObjectURL(videoBlob);
+            try {
+                eyeVideo.src = vidBlobUrl;
+            } catch (err) {
+                console.log("blob exception", err);
             }
-        };
-        req.onerror = function () {
-            console.log("error loading blob video for", url);
         }
-        req.send();
-        return eyeVideo;
+    };
+    req.onerror = function () {
+        console.log("error loading blob video for", url);
     }
+    req.send();
+    return eyeVideo;
+}
 
 
-    function setupWebcam() {
-        const video = document.createElement('video');
+function setupWebcam() {
+    const video = document.createElement('video');
 
 
-        var hasUserMedia = navigator.webkitGetUserMedia ? true : false;
+    var hasUserMedia = navigator.webkitGetUserMedia ? true : false;
 
-        if (!hasUserMedia) return createVideo("selfie.mp4");
+    if (!hasUserMedia) return createVideo("selfie.mp4");
 
-        var playing = false;
-        var timeupdate = false;
+    var playing = false;
+    var timeupdate = false;
 
-        video.autoplay = true;
-        video.muted = true;
-        video.loop = true;
+    video.autoplay = true;
+    video.muted = true;
+    video.loop = true;
 
-        var constraints = { video: { width: 1280, height: 720 } };
+    var constraints = { video: { width: 1280, height: 720 } };
 
-        navigator.mediaDevices.getUserMedia(constraints)
-            .then(function (mediaStream) {
-                video.srcObject = mediaStream;
-                video.onloadedmetadata = function (e) {
-                    video.play();
-                };
-            })
-            .catch(function (err) { console.log(err.name + ": " + err.message); }); // always check for errors at the end.
+    navigator.mediaDevices.getUserMedia(constraints)
+        .then(function (mediaStream) {
+            video.srcObject = mediaStream;
+            video.onloadedmetadata = function (e) {
+                video.play();
+            };
+        })
+        .catch(function (err) { console.log(err.name + ": " + err.message); }); // always check for errors at the end.
 
-        return video;
-    }
-    
+    return video;
+}
+
 
 //setting up 
 const gl = document.querySelector("#glCanvas").getContext("webgl2", {
@@ -93,22 +93,20 @@ let textures = {};
 
 let frameBufferIndex = 0;
 
-let debuggingRenderLoop = false;
-
 function render() {
     requestAnimationFrame(render);
-    if(!p5SetupCalled) return;
+    if(!p5SetupCalled) return; //extra defensive - might not need this anymore
+
     // if(twgl.resizeCanvasToDisplaySize(gl.canvas)){
     //     twgl.resizeFramebufferInfo(gl, frameBuffers[0]);
     //     twgl.resizeFramebufferInfo(gl, frameBuffers[1]);
     // }
+
     gl.viewport(0, 0, gl.canvas.width, gl.canvas.height);
 
     refreshUniforms(); //module-callback
     const uniforms = getPass1Uniforms(); //module-callback
     const uniforms_stage2 = getPass2Uniforms(); //module-callback
-    
-    if(debuggingRenderLoop) console.log(uniforms.time, uniforms_stage2.time);
 
     gl.useProgram(programInfo.program);
     twgl.setBuffersAndAttributes(gl, programInfo, bufferInfo);
@@ -157,9 +155,9 @@ async function loadShadersAndAssets(){
     draw = drawing;
     globalEval(shaderArray[5]);
 
-    await Promise.all(assetPromises); //module-callback
+    await Promise.all(assetPromises); //module-callback - define assetPromises
 
-    textures = handleAssetsAndCreateTextures(...postPromiseAssets); //module-callback
+    textures = handleAssetsAndCreateTextures(...postPromiseAssets); //module-callback - define postPromiseAssets
     
     console.log("shaderArray", shaderArray);
     headerShader = shaderArray[0];
