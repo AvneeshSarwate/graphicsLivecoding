@@ -74,7 +74,8 @@ function setupWebcam() {
 
 
 //setting up 
-const gl = document.querySelector("#glCanvas").getContext("webgl2", {
+const webgl2Supported = !!document.querySelector("#glCanvas").getContext("webgl2");
+const gl = document.querySelector("#glCanvas").getContext(webgl2Supported ? "webgl2" : "webgl", {
     alpha: false,
     depth: false,
     antialias: true,
@@ -132,9 +133,15 @@ function render() {
 const moduleString = window.location.href.split("?")[1]
 const moduleName = moduleString ? moduleString : "eyebeamSVG";
 
-const headerFSreq = $.get("header.frag");
-const fsReq = $.get(moduleName+"/shader1.glsl");
-const fsReq2 = $.get(moduleName+"/shader2.glsl");
+const shaderPaths = {
+    header: webgl2Supported ? "header.frag" : "header_gl1.frag",
+    pass1: webgl2Supported ? moduleName+"/shader1.glsl" : moduleName+"/shader1_gl1.glsl",
+    pass2: webgl2Supported ? moduleName+"/shader2.glsl" : moduleName+"/shader2_gl1.glsl"
+};
+
+const headerFSreq = $.get(shaderPaths.header);
+const fsReq = $.get(shaderPaths.pass1);
+const fsReq2 = $.get(shaderPaths.pass2);
 let programInfo = twgl.createProgramInfo(gl, ["vs", "fs"]);
 let programInfo_stage2 = twgl.createProgramInfo(gl, ["vs", "fs2"]);
 
