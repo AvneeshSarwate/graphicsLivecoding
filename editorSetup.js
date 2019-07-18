@@ -1,17 +1,17 @@
-var langTools = ace.require("ace/ext/language_tools");
+let langTools = ace.require("ace/ext/language_tools");
 // langTools.setCompleters([langTools.snippetCompleter, langTools.keyWordCompleter])
-var editors = [null, null, null, null, null];
-var defaultShaders = ["fs", "fs2"]
+let editors = [null, null, null, null, null];
+let defaultShaders = ["fs", "fs2"]
 function initShaderEditor(editorIndex) {
-    var editorId = "editor" + editorIndex;
-    var editor = ace.edit(editorId);
+    let editorId = "editor" + editorIndex;
+    let editor = ace.edit(editorId);
     editor.session.setMode("ace/mode/glsl");
     editor.setTheme("ace/theme/monokaiCustom");
     editor.setDisplayIndentGuides(false);
     editor.setShowPrintMargin(false);
-    var shaderText = $("#" + defaultShaders[Math.sign(editorIndex - 1)]).html(); //assume buffer 0 is p5, 1 is baseShader, 2... are post processing 
-    editors[editorIndex] = { editor, id: editorId, text: shaderText, visible: false, lang: "frac", timeout: null };
-    editor.setValue(shaderText, -1);
+    let editorText = "\n\n\n//editor" + editorIndex;
+    editors[editorIndex] = { editor, id: editorId, text: editorText, visible: false, lang: "frac", timeout: null };
+    editor.setValue(editorText, -1);
     $("#" + editorId).hide();
     editor.session.on("change", (evt) => {
         let editorInfo = editors[editorIndex];
@@ -32,14 +32,15 @@ function initShaderEditor(editorIndex) {
 }
 
 function initJSEditor(editorIndex) {
-    var editorId = "editor" + editorIndex;
-    var editor = ace.edit(editorId);
+    let editorId = "editor" + editorIndex;
+    let editor = ace.edit(editorId);
     editor.session.setMode("ace/mode/javascript");
     editor.setTheme("ace/theme/monokaiCustom");
     editor.setDisplayIndentGuides(false);
     editor.setShowPrintMargin(false);
-    editors[editorIndex] = { editor, id: editorId, shaderText: "\n\n\n\n\n" + editorId, visible: false, lang: "js" };
-    editor.setValue("\n\n\n\n\n" + editorId);
+    let editorText = "\n\n\n//editor" + editorIndex;
+    editors[editorIndex] = { editor, id: editorId, text: editorText, visible: false, lang: "js" };
+    editor.setValue(editorText);
     $("#" + editorId).hide();
     editor.session.on("change", (evt) => {
         let editorInfo = editors[editorIndex];
@@ -47,10 +48,10 @@ function initJSEditor(editorIndex) {
         setTimeout(() => {
             editorInfo.text = editorInfo.editor.getValue();
             const lastDraw = draw;
-            try{
+            try {
                 eval(editorInfo.text);
                 draw = drawing;
-            } catch(e){
+            } catch (e) {
                 console.log("p5 draw function error", e.stack);
                 if (e instanceof ReferenceError) {
                     console.log("p5 draw function referenceerror", e);
@@ -60,7 +61,7 @@ function initJSEditor(editorIndex) {
     });
 
 }
- 
+
 function showEditor(index) {
     if (!editors[index]) return;
     editors.forEach((editorInfo, ind) => {

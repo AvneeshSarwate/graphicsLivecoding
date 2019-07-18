@@ -1,4 +1,4 @@
-var rd = 0.25; //downscaling SVG for performance (rd stand for resolutionDowngrade)
+let rd = 0.25; //downscaling SVG for performance (rd stand for resolutionDowngrade)
 const glCanvas = document.querySelector("#glCanvas");
 glCanvas.width = 1920 * rd * 2;
 glCanvas.height = 1080 * rd * 2;
@@ -14,7 +14,7 @@ function toggleFullScreen() {
 }
 
 function createVideo(url) {
-    var req = new XMLHttpRequest();
+    let req = new XMLHttpRequest();
     req.open('GET', url, true);
     req.responseType = 'blob';
     let eyeVideo = document.createElement("video");
@@ -26,8 +26,8 @@ function createVideo(url) {
         // Onload is triggered even on 404
         // so we need to check the status code
         if (this.status === 200) {
-            var videoBlob = this.response;
-            var vidBlobUrl = URL.createObjectURL(videoBlob);
+            let videoBlob = this.response;
+            let vidBlobUrl = URL.createObjectURL(videoBlob);
             try {
                 eyeVideo.src = vidBlobUrl;
             } catch (err) {
@@ -47,18 +47,18 @@ function setupWebcam() {
     const video = document.createElement('video');
 
 
-    var hasUserMedia = navigator.webkitGetUserMedia ? true : false;
+    let hasUserMedia = navigator.webkitGetUserMedia ? true : false;
 
     if (!hasUserMedia) return createVideo("selfie.mp4");
 
-    var playing = false;
-    var timeupdate = false;
+    let playing = false;
+    let timeupdate = false;
 
     video.autoplay = true;
     video.muted = true;
     video.loop = true;
 
-    var constraints = { video: { width: 1280, height: 720 } };
+    let constraints = { video: { width: 1280, height: 720 } };
 
     navigator.mediaDevices.getUserMedia(constraints)
         .then(function (mediaStream) {
@@ -142,8 +142,8 @@ const shaderPaths = {
 const headerFSreq = $.get(shaderPaths.header);
 const fsReq = $.get(shaderPaths.pass1);
 const fsReq2 = $.get(shaderPaths.pass2);
-let programInfo = twgl.createProgramInfo(gl, ["vs", "fs"]);
-let programInfo_stage2 = twgl.createProgramInfo(gl, ["vs", "fs2"]);
+let programInfo; 
+let programInfo_stage2;
 
 let setupPromise = $.get({url: moduleName+"/setup.js", dataType: "text"});
 let drawingPromise = $.get({url: moduleName+"/drawing.js", dataType: "text"});
@@ -155,7 +155,7 @@ const globalEval = eval;
 
 async function loadShadersAndAssets(){
 
-    var shaderArray = await Promise.all([headerFSreq, fsReq, fsReq2, setupPromise, drawingPromise, controllersPromise]);
+    let shaderArray = await Promise.all([headerFSreq, fsReq, fsReq2, setupPromise, drawingPromise, controllersPromise]);
 
     globalEval(shaderArray[3]);
     globalEval(shaderArray[4]);
@@ -166,7 +166,7 @@ async function loadShadersAndAssets(){
 
     textures = handleAssetsAndCreateTextures(...postPromiseAssets); //module-callback - define postPromiseAssets
     
-    console.log("shaderArray", shaderArray);
+    // console.log("shaderArray", shaderArray);
     headerShader = shaderArray[0];
 
     programInfo = twgl.createProgramInfo(gl, ["vs", shaderArray[0] + shaderArray[1]]);
