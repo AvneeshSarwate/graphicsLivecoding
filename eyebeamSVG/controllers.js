@@ -1,7 +1,5 @@
 console.log("controllers.js eval");
 
-var fpsMeter = new FPSMeter();
-
 var gui = new dat.GUI();
 var controllerProps = { letterTwist: 0, cameraBlend: 0, centerWarp: 0, letterMotion: 0 };
 var propToSliderIndex = [['letterTwist', 1], ['cameraBlend', 2], ['centerWarp', 3], ['letterMotion', 5]];

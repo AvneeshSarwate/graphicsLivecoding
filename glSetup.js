@@ -3,6 +3,8 @@ const glCanvas = document.querySelector("#glCanvas");
 glCanvas.width = 1920 * rd * 2;
 glCanvas.height = 1080 * rd * 2;
 
+var fpsMeter = new FPSMeter();
+
 function toggleFullScreen() {
     if (!document.fullscreenElement) {
         glCanvas.requestFullscreen();
@@ -162,7 +164,7 @@ async function loadShadersAndAssets(){
     draw = drawing;
     globalEval(shaderArray[5]);
 
-    await Promise.all(assetPromises); //module-callback - define assetPromises
+    await Promise.all(assetPromises).catch(e => console.log("asset error", e)); //module-callback - define assetPromises
 
     textures = handleAssetsAndCreateTextures(...postPromiseAssets); //module-callback - define postPromiseAssets
     

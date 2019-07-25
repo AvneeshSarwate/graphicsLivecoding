@@ -62,7 +62,7 @@ function initJSEditor(editorIndex) {
 
 }
 
-function showEditor(index) {
+function showEditor(evt, index) {
     if (!editors[index]) return;
     editors.forEach((editorInfo, ind) => {
         if (editorInfo) {
@@ -76,11 +76,16 @@ function showEditor(index) {
             }
         }
     });
-
+    if(!evt) return;
+    let tabs = $(".tablink");
+    tabs.removeClass("w3-red");
+    tabs.addClass("w3-black");
+    $(evt.target).addClass("w3-red");
+    $(evt.target).removeClass("w3-black");
 }
 
 initJSEditor(0);
 initShaderEditor(1);
 initShaderEditor(2);
 
-showEditor(0);
+showEditor(null, 0);

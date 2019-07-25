@@ -3,6 +3,7 @@
 
 <head>
     <meta http-equiv="content-type" content="text/html; charset=utf-8">
+    <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
     <title>Eyebeam Projection</title>
     <script type="text/javascript" src="p5.js"></script>
     <script type="text/javascript" src="p5.func.js"></script>
@@ -26,14 +27,26 @@
             right: 10px;
             text-shadow: rgba( 0, 0, 0, 1 ) 0px 1px 1px;
         }
+        .renderBody {
+            position: absolute;
+            height: 100%;
+            width: 100%;
+            top: 35px;
+        }
     </style>
 </head>
 
 <body style="background-color: white;">
-    <canvas id="glCanvas" width="800" height="600" style="height: 100%; width: 100%; position: absolute;"></canvas>
-    <div id="editor0" class="codeEditor" style="position: absolute; width: 100%; height: 100%;"></div>
-    <div id="editor1" class="codeEditor" style="position: absolute; width: 100%; height: 100%;"></div>
-    <div id="editor2" class="codeEditor" style="position: absolute; width: 100%; height: 100%;"></div>
+    <div class="w3-bar w3-black">
+        <button class="w3-bar-item w3-button tablink w3-red" onclick="showEditor(event, 0)">JS Draw</button>
+        <button class="w3-bar-item w3-button tablink" onclick="showEditor(event, 1)">Shader 1</button>
+        <button class="w3-bar-item w3-button tablink" onclick="showEditor(event, 2)">Shader 2</button>
+    </div>
+
+    <canvas id="glCanvas" class="renderBody" width="800" height="600"></canvas>
+    <div id="editor0" class="codeEditor renderBody" ></div>
+    <div id="editor1" class="codeEditor renderBody"></div>
+    <div id="editor2" class="codeEditor renderBody"></div>
 </body>
 <script id="vs" type="notjs">
 #version 300 es
