@@ -4,6 +4,7 @@ glCanvas.width = 1920 * rd * 2;
 glCanvas.height = 1080 * rd * 2;
 
 var fpsMeter = new FPSMeter();
+fpsMeter.hide();
 
 function toggleFullScreen() {
     if (!document.fullscreenElement) {
@@ -97,6 +98,9 @@ let textures = {};
 let frameBufferIndex = 0;
 
 function render() {
+    // $("#editor-container").css("top", sinN(time*3 +cos(time))*150);
+    // $("#editor-container").css("left", cosN(time*3 + sin(time*1.3))*150);
+    
     requestAnimationFrame(render);
     if(!p5SetupCalled) return; //extra defensive - might not need this anymore
 
