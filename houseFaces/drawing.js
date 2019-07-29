@@ -2,6 +2,8 @@ console.log("drawing.js eval");
 
 
 function drawing(){
+    let w = p5w;
+    let h = p5h;
     let yStep = 24;
     frameInd++;
     // if(frameInd%5 != 0) return;

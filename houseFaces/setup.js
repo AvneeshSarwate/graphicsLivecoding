@@ -1,7 +1,21 @@
-let randVals = arrayOf(24).map(v => Math.random());
-let cvn;
-function faces2Setup(){
-    cvn = createCanvas(640, 480);
+//NOTE: - all callback values available outside of the eval must be VAR, not LET
+
+var arrayOf = n => Array.from(new Array(n), () => 0);
+var p5w = 640, p5h = 480;
+var cvn;
+var p5canvas = document.createElement("canvas");
+p5canvas.width = p5w;
+p5canvas.height = p5h;
+var p5SetupCalled = false;
+
+var mod = (x, n) => ((x%n)+n)%n;
+
+var randVals = arrayOf(24).map(v => Math.random());
+var faceImages = [];
+var frameInd = 0;
+
+function setup(){
+    cvn = createCanvas(p5w, p5h);
     cvn.id("p5canvas");
     faceImages[0] = loadImage("houseFaces/faces/jay.png");
     faceImages[1] = loadImage("houseFaces/faces/dac.png");
@@ -9,17 +23,19 @@ function faces2Setup(){
     faceImages[3] = loadImage("houseFaces/faces/jack.png");
     faceImages[4] = loadImage("houseFaces/faces/rohit.png");
     faceImages[5] = loadImage("houseFaces/faces/gary.png");
+    p5Canvas = document.getElementById("p5canvas");
+    p5SetupCalled = true;
 }
 
-let assetPromises = [Promise.resolve("blank promise")];
-let postPromiseAssets = [];
+var assetPromises = [Promise.resolve("blank promise")];
+var postPromiseAssets = [];
 
-p5Canvas = document.getElementById("p5canvas")
+
 
 //use twgl to create textures object here
 function handleAssetsAndCreateTextures(postPromiseAssets, resolvedPromises){ //don't need arguments since we already have reference to the videos
     return twgl.createTextures(gl, {
-        p5Canvas: { src: p5Canvas },
+        p5Canvas: { src: p5canvas },
     });
 }
 
