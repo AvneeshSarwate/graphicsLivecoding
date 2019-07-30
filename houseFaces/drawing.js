@@ -8,7 +8,7 @@ function drawing(){
     // if(frameInd%5 != 0) return;
     for(let y = 0; y < yStep; y++){
         let xPos = (frameInd/60*100) % w ;
-        let yPos = h/yStep*y + sin(frameInd/60 * (1+randVals[y]))*yStep;
+        let yPos = h/yStep*y + sin(frameInd/60 * (1+randVals[y] * (1+sin(time/5)) ))*yStep;
         let faceInd = Math.floor(y/yStep * 6 );
         let face = faceImages[faceInd];
         image(face, xPos, yPos, face.width/5, face.height/5);

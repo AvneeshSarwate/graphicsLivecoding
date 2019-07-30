@@ -37,7 +37,7 @@ var postPromiseAssets = [];
 //use twgl to create textures object here
 function handleAssetsAndCreateTextures(postPromiseAssets, resolvedPromises){ //don't need arguments since we already have reference to the videos
     return twgl.createTextures(gl, {
-        p5Canvas: { src: p5Canvas},
+        p5Canvas: { src: p5Canvas, flipY: 1},
     });
 }
 
@@ -46,6 +46,7 @@ function getPass1Uniforms(){
         time: time,
         resolution: [gl.canvas.width, gl.canvas.height],
         p5: textures.p5Canvas,
+        backbuffer: frameBuffers[frameBufferIndex].attachments[0]
     }
 }
 
