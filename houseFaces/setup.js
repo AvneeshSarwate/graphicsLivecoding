@@ -1,11 +1,12 @@
 //NOTE: - all callback values available outside of the eval must be VAR, not LET
+console.log("setup eval");
 
 var arrayOf = n => Array.from(new Array(n), () => 0);
 var p5w = 640, p5h = 480;
 var cvn;
 var p5Canvas = document.createElement("canvas");
-p5Canvas.width = p5w;
-p5Canvas.height = p5h;
+// p5Canvas.width = p5w;
+// p5Canvas.height = p5h;
 var p5SetupCalled = false;
 
 var mod = (x, n) => ((x%n)+n)%n;
@@ -25,6 +26,7 @@ function setup(){
     faceImages[5] = loadImage("houseFaces/faces/gary.png");
     p5Canvas = document.getElementById("p5Canvas");
     p5SetupCalled = true;
+    noLoop();
 }
 
 var assetPromises = [Promise.resolve("blank promise")];
@@ -35,7 +37,7 @@ var postPromiseAssets = [];
 //use twgl to create textures object here
 function handleAssetsAndCreateTextures(postPromiseAssets, resolvedPromises){ //don't need arguments since we already have reference to the videos
     return twgl.createTextures(gl, {
-        p5Canvas: { src: p5Canvas },
+        p5Canvas: { src: p5Canvas},
     });
 }
 
