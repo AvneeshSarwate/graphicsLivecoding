@@ -33,11 +33,20 @@
             width: 100%;
             top: 35px;
         }
+        /* #p5Canvas {
+            display: none;
+        } */
+        #editor-container {
+            position: fixed; 
+            width: 960px; 
+            height: 540px; 
+            top: 500px;
+        }
     </style>
 </head>
 
 <body style="background-color: white;">
-    <div id="editor-container" style="position: fixed; width: 960px; height: 540px; left: 50px;">
+    <div id="editor-container">
         <div class="w3-bar w3-black">
             <button class="w3-bar-item w3-button tablink w3-red" onclick="showEditor(event, 0)">JS Draw</button>
             <button class="w3-bar-item w3-button tablink" onclick="showEditor(event, 1)">Shader 1</button>

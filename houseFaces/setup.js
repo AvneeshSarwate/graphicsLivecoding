@@ -3,9 +3,9 @@
 var arrayOf = n => Array.from(new Array(n), () => 0);
 var p5w = 640, p5h = 480;
 var cvn;
-var p5canvas = document.createElement("canvas");
-p5canvas.width = p5w;
-p5canvas.height = p5h;
+var p5Canvas = document.createElement("canvas");
+p5Canvas.width = p5w;
+p5Canvas.height = p5h;
 var p5SetupCalled = false;
 
 var mod = (x, n) => ((x%n)+n)%n;
@@ -16,14 +16,14 @@ var frameInd = 0;
 
 function setup(){
     cvn = createCanvas(p5w, p5h);
-    cvn.id("p5canvas");
+    cvn.id("p5Canvas");
     faceImages[0] = loadImage("houseFaces/faces/jay.png");
     faceImages[1] = loadImage("houseFaces/faces/dac.png");
     faceImages[2] = loadImage("houseFaces/faces/neesh.png");
     faceImages[3] = loadImage("houseFaces/faces/jack.png");
     faceImages[4] = loadImage("houseFaces/faces/rohit.png");
     faceImages[5] = loadImage("houseFaces/faces/gary.png");
-    p5Canvas = document.getElementById("p5canvas");
+    p5Canvas = document.getElementById("p5Canvas");
     p5SetupCalled = true;
 }
 
@@ -35,7 +35,7 @@ var postPromiseAssets = [];
 //use twgl to create textures object here
 function handleAssetsAndCreateTextures(postPromiseAssets, resolvedPromises){ //don't need arguments since we already have reference to the videos
     return twgl.createTextures(gl, {
-        p5Canvas: { src: p5canvas },
+        p5Canvas: { src: p5Canvas },
     });
 }
 
@@ -62,6 +62,6 @@ var speedScale = (time) => 1;
 function refreshUniforms(){
     var increment = Date.now() / 1000 - refTime;
     time += increment * speedScale(refTime);
-    twgl.setTextureFromElement(gl, textures.p5, p5Canvas);
+    twgl.setTextureFromElement(gl, textures.p5Canvas, p5Canvas);
     refTime = Date.now() / 1000;
 }
