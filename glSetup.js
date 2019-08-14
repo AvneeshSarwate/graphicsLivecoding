@@ -87,6 +87,7 @@ const gl = document.querySelector("#glCanvas").getContext(webgl2Supported ? "web
     preserveDrawingBuffer: true
 });
 const frameBuffers = [twgl.createFramebufferInfo(gl), twgl.createFramebufferInfo(gl)];
+const frameBuffers2 = [twgl.createFramebufferInfo(gl), twgl.createFramebufferInfo(gl)];
 
 const arrays = {
     position: [-1, -1, 0, 1, -1, 0, -1, 1, 0, -1, 1, 0, 1, -1, 0, 1, 1, 0],
@@ -115,21 +116,30 @@ function render() {
 
     gl.viewport(0, 0, gl.canvas.width, gl.canvas.height);
 
+    //get uniform values
     refreshUniforms(); //module-callback
     const uniforms = getPass1Uniforms(); //module-callback
     const uniforms_stage2 = getPass2Uniforms(); //module-callback
 
+    //set up pass 1 program and bind uniforms
     gl.useProgram(programInfo.program);
     twgl.setBuffersAndAttributes(gl, programInfo, bufferInfo);
     twgl.setUniforms(programInfo, uniforms);
 
+    //draw pass 1 to framebuffer
     twgl.bindFramebufferInfo(gl, frameBuffers[(frameBufferIndex + 1) % 2]);
     twgl.drawBufferInfo(gl, bufferInfo);
 
+    //set up pass 2 program and bind uniforms
     gl.useProgram(programInfo_stage2.program);
     twgl.setBuffersAndAttributes(gl, programInfo_stage2, bufferInfo);
     twgl.setUniforms(programInfo_stage2, uniforms_stage2);
 
+    //draw pass 2 to framebuffer
+    twgl.bindFramebufferInfo(gl, frameBuffers2[(frameBufferIndex + 1) % 2]);
+    twgl.drawBufferInfo(gl, bufferInfo);
+
+    //draw pass 2 to canvas
     twgl.bindFramebufferInfo(gl);
     twgl.drawBufferInfo(gl, bufferInfo);
 

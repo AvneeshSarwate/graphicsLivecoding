@@ -52,7 +52,8 @@ function getPass2Uniforms(){
         time: time,
         resolution: [gl.canvas.width, gl.canvas.height],
         p5: textures.p5Canvas,
-        lastStage: frameBuffers[(frameBufferIndex + 1) % 2].attachments[0]
+        lastStage: frameBuffers[(frameBufferIndex + 1) % 2].attachments[0],
+        backbuffer: frameBuffers2[frameBufferIndex].attachments[0]
     }
 }
 
