@@ -75,6 +75,22 @@ function setupWebcam() {
     return video;
 }
 
+function changeWebcamSelection(camInd, webcamElem){
+    navigator.mediaDevices.enumerateDevices()
+        .then(function(deviceList){return deviceList.filter(device => device.kind == "videoinput")}) 
+        .catch(function(err) { console.log(err.name + ": " + err.message); })  
+        .then(function(cameras){
+            var constraints = {video: { width: 1280, height: 720,  deviceId: cameras[camInd].deviceId} }; 
+            navigator.mediaDevices.getUserMedia(constraints)
+              .then(function(mediaStream) {
+                webcamElem.srcObject = mediaStream;
+                webcamElem.onloadedmetadata = function(e) {
+                    webcamElem.play();
+                };
+              })
+        });
+}
+
 
 //setting up 
 const webgl2Supported = !!document.querySelector("#glCanvas").getContext("webgl2");
