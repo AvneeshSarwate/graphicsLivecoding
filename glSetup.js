@@ -155,9 +155,14 @@ function render() {
     twgl.bindFramebufferInfo(gl, frameBuffers2[(frameBufferIndex + 1) % 2]);
     twgl.drawBufferInfo(gl, bufferInfo);
 
+    //todo - Use another shader pass to render the last framebuffer to canvas.
+    //     - Rendering directly to canvas will make the alpha value in the last 
+    //     - pass behave like a blend against the background rather than as a 
+    //     - "free" memory channel. See how "screenProgram" is used in The_Force
+
     //draw pass 2 to canvas
     twgl.bindFramebufferInfo(gl);
-    twgl.drawBufferInfo(gl, bufferInfo);
+    twgl.drawBufferInfo(gl, bufferInfo); 
 
     frameBufferIndex = (frameBufferIndex + 1) % 2;
 
