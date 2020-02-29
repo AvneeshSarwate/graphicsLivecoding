@@ -9,13 +9,21 @@ var p5Canvas = document.createElement("canvas");
 // p5Canvas.height = p5h;
 var p5SetupCalled = false;
 
+var sinN = n => (Math.sin(n)+1)/2;
+var cosN = n => (Math.cos(n)+1)/2;
+var rand =  seed =>  {
+    var x = Math.sin(seed + 1.1) * 10000;
+    return x - Math.floor(x);
+}
+
 var sliders = Array.from(new Array(127), (e, i) => 0);
 
 var mod = (x, n) => ((x%n)+n)%n;
 
 var voronoi = new Voronoi();
 var bbox = {xl: 0, xr: p5w, yt: 0, yb: p5h}
-var voronoiSites = arrayOf(5).map(e => ({x:Math.random()*p5w, y:Math.random()*p5h}));
+var voronoiRefSites = arrayOf(100).map(e => ({x:Math.random()*p5w, y:Math.random()*p5h}));
+var voronoiSites = voronoiRefSites.map(s => Object.assign({}, s));
 var voronoiStructure = voronoi.compute(voronoiSites, bbox);
 
 function setup(){

@@ -12,13 +12,30 @@ function simplifyCells(voronoiDiagram){
     return cells;
 }
 
+function orderedEdges(cell){
+    var vertices = [];
+    for (var j = 0; j < cell.halfedges.length; j++) {
+        vertices.push([cell.halfedges[j].getStartpoint().x, cell.halfedges[j].getStartpoint().y]);
+    }
+    return vertices
+}
+
 function drawing(){
     clear();
-    let simpleCells = simplifyCells(voronoiStructure);
+    strokeWeight(17);
+    voronoiRefSites.forEach((s, i) => {
+        let s2 = voronoiSites[i];
+        s2.x = s.x + Math.sin(time * (1 + rand(i)))*20;
+        s2.y = s.y + Math.cos(time * (1 + rand(i)))*20; 
+    })
+    voronoi.recycle(voronoiStructure)
+    voronoiStructure = voronoi.compute(voronoiSites, bbox);
     fill(255);
-    simpleCells.forEach(cell => {
+    voronoiSites.forEach((site, i) => {
+        let cell = voronoiStructure.cells[site.voronoiId];
+        fill(rand(i)*255, rand(i+.1)*255, rand(i+.2)*255)
         beginShape();
-        cell.forEach(pt => vertex(pt[0], pt[1]))
+        orderedEdges(cell).forEach(pt => vertex(pt[0], pt[1]))
         endShape();
     });
 }
