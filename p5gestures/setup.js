@@ -22,7 +22,16 @@ var mod = (x, n) => ((x%n)+n)%n;
 
 var voronoi = new Voronoi();
 var bbox = {xl: 0, xr: p5w, yt: 0, yb: p5h}
-var voronoiRefSites = arrayOf(100).map(e => ({x:Math.random()*p5w, y:Math.random()*p5h}));
+// var voronoiRefSites = arrayOf(20).map((e, i, a) => {
+//     return {
+//         x: p5w/2 + Math.cos(i/a.length * Math.PI * 2)*p5w/2, 
+//         y: p5h/2 + Math.sin(i/a.length * Math.PI * 2)*p5h/2}
+//     });
+var voronoiRefSites = arrayOf(100).map((e, i, a) => {
+    return {
+        x: i/a.length * p5w, 
+        y: p5h/2}
+    });
 var voronoiSites = voronoiRefSites.map(s => Object.assign({}, s));
 var voronoiStructure = voronoi.compute(voronoiSites, bbox);
 
