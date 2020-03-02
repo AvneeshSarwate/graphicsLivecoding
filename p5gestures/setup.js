@@ -24,7 +24,7 @@ var mod = (x, n) => ((x%n)+n)%n;
 
 var voronoi = new Voronoi();
 var bbox = {xl: 0, xr: p5w, yt: 0, yb: p5h}
-var numSites = 100;
+var numSites = 20;
 
 function circleCells(n){
     return (time) => {
@@ -44,10 +44,19 @@ function horizontalCells(n){
             });
     }
 }
+function verticalCells(n){
+    return (time) => {
+        return arrayOf(n).map((e, i, a) => {
+            return {
+                x: p5w/2, 
+                y: i/a.length * p5h}
+            });
+    }
+}
 function snoiseTrailCells(n){
     return (time) => {
         return arrayOf(n).map((e, i, a) => {
-            let indTime = time - i * (sliders[0]+0.01);
+            let indTime = time*sliders[0] - i * (sliders[1]+0.01);
             let dimScale = (noiz, dim) => ((noiz /(.5)**0.5)+1)/2 * dim
             return {
                 x: dimScale(simplex.noise2D(51.32, indTime), p5h), 
@@ -81,7 +90,7 @@ function sitesLerp(n, siteFuncGen1, siteFuncGen2, lerpFunc){
     }
 }
 
-var voronoiRefSites = sitesLerp(numSites, horizontalCells, circleCells, () => sinN(time));
+var voronoiRefSites = snoiseTrailCells(numSites);// sitesLerp(numSites, verticalCells, horizontalCells, () => sinN(time));
 var voronoiSites = voronoiRefSites(0).map(s => Object.assign({}, s));
 var voronoiStructure = voronoi.compute(voronoiSites, bbox);
 

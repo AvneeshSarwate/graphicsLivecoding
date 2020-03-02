@@ -24,5 +24,5 @@ void main () {
     vec4 bb = texture(backbuffer, mix(stN, warpN.xy, .51));
     vec4 p5col = texture(p5, p5N);
 
-    fragColor = mix(p5col, bb, p5col.rgb == black ? .8 : 0.); //vec4(mix(bb.rg, stN, 0.005), stN);
+    fragColor = mix(p5col, bb, p5col.rgb == black ? .98 : 0.); //vec4(mix(bb.rg, stN, 0.005), stN);
 }
