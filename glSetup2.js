@@ -119,7 +119,18 @@ function editorAnimation(){
     // $("#editor-container").css("left", cosN(time*3 + sin(time*1.3))*150);
 }
 
+let stopRenderFlag = false;
+function stopRender(){
+    stopRenderFlag = true;
+}
+
 function render() {
+
+    if(stopRenderFlag){
+        stopRenderFlag = false;
+        return;
+    }
+
     editorAnimation();
 
     requestAnimationFrame(render);

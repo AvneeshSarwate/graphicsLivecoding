@@ -16,24 +16,63 @@ var rand =  seed =>  {
     return x - Math.floor(x);
 }
 
+var simplex = new SimplexNoise();
+
 var sliders = Array.from(new Array(127), (e, i) => 0);
 
 var mod = (x, n) => ((x%n)+n)%n;
 
 var voronoi = new Voronoi();
 var bbox = {xl: 0, xr: p5w, yt: 0, yb: p5h}
-// var voronoiRefSites = arrayOf(20).map((e, i, a) => {
-//     return {
-//         x: p5w/2 + Math.cos(i/a.length * Math.PI * 2)*p5w/2, 
-//         y: p5h/2 + Math.sin(i/a.length * Math.PI * 2)*p5h/2}
-//     });
-var voronoiRefSites = arrayOf(100).map((e, i, a) => {
-    return {
-        x: i/a.length * p5w, 
-        y: p5h/2}
-    });
-var voronoiSites = voronoiRefSites.map(s => Object.assign({}, s));
+function circleCells(n){
+    return (time) => {
+        return arrayOf(n).map((e, i, a) => {
+            return {
+                x: p5w/2 + Math.cos(i/a.length * Math.PI * 2)*p5w/2, 
+                y: p5h/2 + Math.sin(i/a.length * Math.PI * 2)*p5h/2}
+            });
+    }
+}
+function horizontalCells(n){
+    return (time) => {
+        return arrayOf(n).map((e, i, a) => {
+            return {
+                x: i/a.length * p5w, 
+                y: p5h/2}
+            });
+    }
+}
+function snoiseTrailCells(n){
+    return (time) => {
+        return arrayOf(n).map((e, i, a) => {
+            let indTime = time - i * (sliders[0]+0.01);
+            let dimScale = (noiz, dim) => ((noiz /(.5)**0.5)+1)/2 * dim
+            return {
+                x: dimScale(simplex.noise2D(51.32, indTime), p5h), 
+                y: dimScale(simplex.noise2D(21.32, indTime), p5w)}
+            });
+    }
+}
+
+var voronoiRefSites = snoiseTrailCells(100);
+var voronoiSites = voronoiRefSites(0).map(s => Object.assign({}, s));
 var voronoiStructure = voronoi.compute(voronoiSites, bbox);
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 function setup(){
     cvn = createCanvas(p5w, p5h);

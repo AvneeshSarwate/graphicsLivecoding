@@ -23,7 +23,7 @@ function orderedEdges(cell){
 function drawing(){
     clear();
     strokeWeight(17);
-    voronoiRefSites.forEach((s, i) => {
+    voronoiRefSites(time).forEach((s, i) => {
         let s2 = voronoiSites[i];
         s2.x = s.x + Math.sin(time * (1 + rand(i)))*120;
         s2.y = s.y + Math.cos(time * (1 + rand(i)))*120; 
