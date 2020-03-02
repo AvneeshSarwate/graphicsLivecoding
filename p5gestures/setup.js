@@ -24,6 +24,8 @@ var mod = (x, n) => ((x%n)+n)%n;
 
 var voronoi = new Voronoi();
 var bbox = {xl: 0, xr: p5w, yt: 0, yb: p5h}
+var numSites = 100;
+
 function circleCells(n){
     return (time) => {
         return arrayOf(n).map((e, i, a) => {
@@ -53,8 +55,21 @@ function snoiseTrailCells(n){
             });
     }
 }
+var mix = (v1, v2, a) => ({x: v1.x*(1-a) + v2.x*a, y: v1.y*(1-a) + v2.y*a});
+function lineCircleLerpCells(n){
+    var lineFunc = horizontalCells(n);
+    var circFunc = circleCells(n);
+    return (time) => {
+        let a = sliders[0];
+        let lineSites = lineFunc(time);
+        let circSites = circFunc(time);
+        return lineSites.map((e, i) => {
+            return mix(e, circSites[i], a);
+        });
+    }
+}
 
-var voronoiRefSites = snoiseTrailCells(100);
+var voronoiRefSites = lineCircleLerpCells(numSites);
 var voronoiSites = voronoiRefSites(0).map(s => Object.assign({}, s));
 var voronoiStructure = voronoi.compute(voronoiSites, bbox);
 
