@@ -68,8 +68,20 @@ function lineCircleLerpCells(n){
         });
     }
 }
+function sitesLerp(n, siteFuncGen1, siteFuncGen2, lerpFunc){
+    var siteFunc1 = siteFuncGen1(n);
+    var siteFunc2 = siteFuncGen2(n);
+    return (time) => {
+        let a = lerpFunc();
+        let sites1 = siteFunc1(time);
+        let sites2 = siteFunc2(time);
+        return sites1.map((e, i) => {
+            return mix(e, sites2[i], a);
+        });
+    }
+}
 
-var voronoiRefSites = lineCircleLerpCells(numSites);
+var voronoiRefSites = sitesLerp(numSites, horizontalCells, circleCells, () => sinN(time));
 var voronoiSites = voronoiRefSites(0).map(s => Object.assign({}, s));
 var voronoiStructure = voronoi.compute(voronoiSites, bbox);
 
