@@ -65,6 +65,7 @@ function snoiseTrailCells(n){
     }
 }
 var mix = (v1, v2, a) => ({x: v1.x*(1-a) + v2.x*a, y: v1.y*(1-a) + v2.y*a});
+var mixn = (n1, n2, a) => n1*(1-a) + n2*a;
 function lineCircleLerpCells(n){
     var lineFunc = horizontalCells(n);
     var circFunc = circleCells(n);
