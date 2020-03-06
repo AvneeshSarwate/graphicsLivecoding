@@ -118,7 +118,7 @@ function leftStartSweep(cellPoints, frac){
     slicedPoints.splice(0, 0, [topIntersection.x, topIntersection.y]);
     slicedPoints.push([bottomIntersection.x, bottomIntersection.y]);
     // console.log(slicedPoints, ccStartPointInd, ccEndPointInd);
-    return slicedPoints;
+    return {polygon: slicedPoints, line: fracLine};
 }
 
 function rightStartSweep(cellPoints, frac){
@@ -184,7 +184,7 @@ function rightStartSweep(cellPoints, frac){
     slicedPoints.splice(0, 0, [topIntersection.x, topIntersection.y]);
     slicedPoints.push([bottomIntersection.x, bottomIntersection.y]);
     // console.log(slicedPoints, ccStartPointInd, ccEndPointInd);
-    return slicedPoints;
+    return {polygon: slicedPoints, line: fracLine};
 }
 
 function topStartSweep(cellPoints, frac){
@@ -248,7 +248,7 @@ function topStartSweep(cellPoints, frac){
     slicedPoints.splice(0, 0, [rightIntersection.x, rightIntersection.y]);
     slicedPoints.push([leftIntersection.x, leftIntersection.y]);
     // console.log(slicedPoints, ccStartPointInd, ccEndPointInd);
-    return slicedPoints;
+    return {polygon: slicedPoints, line: fracLine};
 }
 
 function bottomStartSweep(cellPoints, frac){
@@ -313,7 +313,7 @@ function bottomStartSweep(cellPoints, frac){
     slicedPoints.splice(0, 0, [rightIntersection.x, rightIntersection.y]);
     slicedPoints.push([leftIntersection.x, leftIntersection.y]);
     // console.log(slicedPoints, ccStartPointInd, ccEndPointInd);
-    return slicedPoints;
+    return {polygon: slicedPoints, line: fracLine};
 }
 
 let mod =  (n, m) =>  ((n % m) + m) % m;
