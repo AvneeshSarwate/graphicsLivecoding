@@ -19,7 +19,7 @@ var sliders = Array.from(new Array(127), (e, i) => 0);
 
 var voronoi = new Voronoi();
 var bbox = {xl: 0, xr: p5w, yt: 0, yb: p5h}
-var numSites = 5;
+var numSites = 40;
 
 function circleCells(n){
     return (argTime) => {
@@ -151,7 +151,7 @@ function getPass2Uniforms(){
 var refTime = Date.now() / 1000;
 var time = 0;
 var getTime = () => time;
-var speedScale = (time) => 0.1;
+var speedScale = (time) => 0.2;
 
 function refreshUniforms(){
     var increment = Date.now() / 1000 - refTime;
