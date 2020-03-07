@@ -52,10 +52,10 @@ function snoiseTrailCells(n){
     return (argTime) => {
         return arrayOf(n).map((e, i, a) => {
             let indTime = 100 + argTime*sliders[0] - i * (sliders[1]+0.01);
-            let dimScale = (noiz, dim) => ((noiz /(.5)**0.5)+1)/2 * dim
+            let dimScale = (noiz, dim) => (noiz +1)/2 * dim
             return {
-                x: dimScale(simplex.noise2D(51.32, indTime), p5h), 
-                y: dimScale(simplex.noise2D(21.32, indTime), p5w)}
+                x: dimScale(simplex.noise2D(51.32, indTime), p5w), 
+                y: dimScale(simplex.noise2D(21.32, indTime), p5h)}
             });
     }
 }

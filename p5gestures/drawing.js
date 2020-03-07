@@ -19,19 +19,22 @@ function orderedEdges(cell){
     }
     return vertices
 }
-var newTime = () => 10;
+var newTime = 10;
 function drawing(){
     clear();
     strokeWeight(1);
     sliders[0] = 0.3;
     sliders[1] = 0.04;
     
-    // voronoiRefSites(newTime()).forEach((s, i, a) => {
-    //     let s2 = voronoiSites[i];
-    //     s2.x = s.x + Math.sin(time * (1 + rand(i)))*0;
-    //     s2.y = s.y + Math.cos(time * (1 + rand(i)))*0; 
-    // })
-    // voronoi.recycle(voronoiStructure)
+    voronoiRefSites(time).forEach((s, i, a) => {
+        let s2 = voronoiSites[i];
+        s2.x = s.x + Math.sin(time * (1 + rand(i)))*0;
+        s2.y = s.y + Math.cos(time * (1 + rand(i)))*0; 
+    })
+    let refSites = voronoiRefSites(time).filter(s => {
+        return s.x < 0 || s.x > p5w || s.y < 0 || s.y > p5h;
+    })
+    if(refSites.length > 0) console.log("OUT OF BOUNDS", refSites);
     try{
         voronoiStructure = voronoi.compute(voronoiSites, bbox);
     } catch(err){
