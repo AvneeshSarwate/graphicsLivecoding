@@ -151,7 +151,7 @@ function getPass2Uniforms(){
 var refTime = Date.now() / 1000;
 var time = 0;
 var getTime = () => time;
-var speedScale = (time) => 1;
+var speedScale = (time) => 0.1;
 
 function refreshUniforms(){
     var increment = Date.now() / 1000 - refTime;

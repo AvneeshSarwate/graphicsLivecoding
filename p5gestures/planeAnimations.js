@@ -25,7 +25,7 @@ function* lineLerpGen(ind, duration){
         let sweepPoints = [];
         try {
             let simplifiedPoints = getSimplifiedPoints(ind);
-            sweepPoints = leftStartSweep(simplifiedPoints, sinN(getTime())).polygon;
+            sweepPoints = directionSweep(simplifiedPoints, sinN(getTime()*10), 'bottom').polygon;
         } catch(err){
             // console.log("SWEEP ERROR", err, sweepPoints);
         }

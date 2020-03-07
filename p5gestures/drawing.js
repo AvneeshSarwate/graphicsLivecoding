@@ -30,11 +30,8 @@ function drawing(){
         let s2 = voronoiSites[i];
         s2.x = s.x + Math.sin(time * (1 + rand(i)))*0;
         s2.y = s.y + Math.cos(time * (1 + rand(i)))*0; 
-    })
-    let refSites = voronoiRefSites(time).filter(s => {
-        return s.x < 0 || s.x > p5w || s.y < 0 || s.y > p5h;
-    })
-    if(refSites.length > 0) console.log("OUT OF BOUNDS", refSites);
+    });
+
     try{
         voronoiStructure = voronoi.compute(voronoiSites, bbox);
     } catch(err){
@@ -51,6 +48,6 @@ function drawing(){
         getSimplifiedPoints(i).forEach(pt => vertex(pt[0], pt[1]))
         endShape(CLOSE);
         
-        // voronoiSiteAnimations[i].next();
+        voronoiSiteAnimations[i].next();
     });
 }

@@ -55,265 +55,38 @@ function segment_intersection(ray1, ray2) {
     return {x: x, y: y};
 }
 
-
-function leftStartSweep(cellPoints, frac){
-    //start just working on frac as left-to-right sweep, then generalize
+function directionSweep(cellPoints, frac, direction){
     let cellBbox = getBBox(cellPoints);
-    let xFrac = mixn(cellBbox.minX, cellBbox.maxX, frac);
-    let fracLine = [{x: xFrac, y: cellBbox.maxY}, {x: xFrac, y: cellBbox.minY}];
+    let isHorizontal = ['left', 'right'].includes(direction);
+
+    let fracVal = isHorizontal ? mixn(cellBbox.minX, cellBbox.maxX, frac) : mixn(cellBbox.minY, cellBbox.maxY, frac);
+    let fracLine = isHorizontal ? [{x: fracVal, y: cellBbox.maxY}, {x: fracVal, y: cellBbox.minY}] : [{x: cellBbox.maxX, y: fracVal}, {x: cellBbox.minX, y: fracVal}];
+    
     let lineSegments = cellPoints.map((p, i, a) => {
         let p2 = a[(i+1)%a.length];
         return [{x: p[0], y: p[1]}, {x: p2[0], y: p2[1]}];
     });
-    let intersectingLines = lineSegments.filter(s => segment_intersection(s, fracLine));
-    let sharedPointDetector = new Set(); 
-    let dedupedLines = intersectingLines.filter(l => {
-        let hasPt = p => sharedPointDetector.has(JSON.stringify(p));
-        let noSharedPointsSeen = !(hasPt(l[0]) && hasPt(l[1]));
-        if(noSharedPointsSeen){
-            sharedPointDetector.add(JSON.stringify(l[0]));
-            sharedPointDetector.add(JSON.stringify(l[1]));
+    let intersections = lineSegments.map(s => segment_intersection(s, fracLine)).filter(i => i).map(p => [p.x, p.y]);
+
+    let allPoints = []; 
+    if     (direction === 'top') allPoints = cellPoints.filter(p => p[1] <= fracVal);
+    else if(direction === 'bottom') allPoints = cellPoints.filter(p => p[1] >= fracVal);
+    else if(direction === 'left') allPoints = cellPoints.filter(p => p[0] <= fracVal);
+    else if(direction === 'right') allPoints = cellPoints.filter(p => p[0] >= fracVal);
+    intersections.forEach(p => allPoints.push(p));
+
+    let centerX = cellPoints.map(p => p[0]).reduce((a,b) => a+b/cellPoints.length, 0);
+    let centerY = cellPoints.map(p => p[1]).reduce((a,b) => a+b/cellPoints.length, 0);
+    let pointsTheta = allPoints.map(p => {
+        return{
+            x: p[0],
+            y: p[1],
+            theta: Math.atan2(p[1]-centerY, p[0]-centerX)
         }
-        return noSharedPointsSeen
     });
-    
-    //find "top" line out of deduped lines
-    let l1Max = Math.max(dedupedLines[0][0].y, dedupedLines[0][1].y);
-    let l1Min = Math.min(dedupedLines[0][0].y, dedupedLines[0][1].y);
-    let l2Max = Math.max(dedupedLines[1][0].y, dedupedLines[1][1].y);
-    let l2Min = Math.min(dedupedLines[1][0].y, dedupedLines[1][1].y);
 
-    //have a ! because lower Y values are on "top"
-    let l1IsTop = !(l1Max >= l2Max && l1Min > l2Min);
-  
-    let topLine = l1IsTop ? dedupedLines[0] : dedupedLines[1];
-    let bottomLine = l1IsTop ? dedupedLines[1] : dedupedLines[0];
-  
-  
-    let topIntersection = segment_intersection(fracLine, topLine);
-    let bottomIntersection = segment_intersection(fracLine, bottomLine);
-
-  
-    //in counterclockwise (cc) order, the first point
-    let ccStartPointVal = topLine[0].x < topLine[1].x ? topLine[0] : topLine[1];  
-    let ccEndPointVal = bottomLine[0].x < bottomLine[1].x ? bottomLine[0] : bottomLine[1];
-
-    let searchablePoints = cellPoints.map(p => JSON.stringify(p));
-
-    let startPtStr = JSON.stringify([ccStartPointVal.x, ccStartPointVal.y]);
-    let endPtStr = JSON.stringify([ccEndPointVal.x, ccEndPointVal.y]);
-    let ccStartPointInd = searchablePoints.indexOf(startPtStr);
-    let ccEndPointInd = searchablePoints.indexOf(endPtStr);
-  
-  
-    let slicedPoints = [];
-    let counterInd = ccStartPointInd;
-  
-    slicedPoints.push(cellPoints[counterInd]);
-    while(counterInd != ccEndPointInd) {  
-      counterInd = (counterInd+1) % cellPoints.length;
-      slicedPoints.push(cellPoints[counterInd]);
-    } 
-      
-    slicedPoints.splice(0, 0, [topIntersection.x, topIntersection.y]);
-    slicedPoints.push([bottomIntersection.x, bottomIntersection.y]);
-    // console.log(slicedPoints, ccStartPointInd, ccEndPointInd);
-    return {polygon: slicedPoints, line: fracLine};
-}
-
-function rightStartSweep(cellPoints, frac){
-    //start just working on frac as left-to-right sweep, then generalize
-    frac = 1 - frac;
-    let cellBbox = getBBox(cellPoints);
-    let xFrac = mixn(cellBbox.minX, cellBbox.maxX, frac);
-    let fracLine = [{x: xFrac, y: cellBbox.maxY}, {x: xFrac, y: cellBbox.minY}];
-    let lineSegments = cellPoints.map((p, i, a) => {
-        let p2 = a[(i+1)%a.length];
-        return [{x: p[0], y: p[1]}, {x: p2[0], y: p2[1]}];
-    });
-    let intersectingLines = lineSegments.filter(s => segment_intersection(s, fracLine));
-    let sharedPointDetector = new Set(); 
-    let dedupedLines = intersectingLines.filter(l => {
-        let hasPt = p => sharedPointDetector.has(JSON.stringify(p));
-        let noSharedPointsSeen = !(hasPt(l[0]) && hasPt(l[1]));
-        if(noSharedPointsSeen){
-            sharedPointDetector.add(JSON.stringify(l[0]));
-            sharedPointDetector.add(JSON.stringify(l[1]));
-        }
-        return noSharedPointsSeen
-    });
-    
-    //find "top" line out of deduped lines
-    let l1Max = Math.max(dedupedLines[0][0].y, dedupedLines[0][1].y);
-    let l1Min = Math.min(dedupedLines[0][0].y, dedupedLines[0][1].y);
-    let l2Max = Math.max(dedupedLines[1][0].y, dedupedLines[1][1].y);
-    let l2Min = Math.min(dedupedLines[1][0].y, dedupedLines[1][1].y);
-
-    //have a ! because lower Y values are on "top"
-    let l1IsTop = !(l1Max >= l2Max && l1Min > l2Min);
-  
-    let topLine = l1IsTop ? dedupedLines[0] : dedupedLines[1];
-    let bottomLine = l1IsTop ? dedupedLines[1] : dedupedLines[0];
-  
-  
-    let topIntersection = segment_intersection(fracLine, topLine);
-    let bottomIntersection = segment_intersection(fracLine, bottomLine);
-
-  
-    //in counterclockwise (cc) order, the first point
-    let ccStartPointVal = topLine[0].x > topLine[1].x ? topLine[0] : topLine[1];  
-    let ccEndPointVal = bottomLine[0].x > bottomLine[1].x ? bottomLine[0] : bottomLine[1];
-
-    let searchablePoints = cellPoints.map(p => JSON.stringify(p));
-
-    let startPtStr = JSON.stringify([ccStartPointVal.x, ccStartPointVal.y]);
-    let endPtStr = JSON.stringify([ccEndPointVal.x, ccEndPointVal.y]);
-    let ccStartPointInd = searchablePoints.indexOf(startPtStr);
-    let ccEndPointInd = searchablePoints.indexOf(endPtStr);
-  
-  
-    let slicedPoints = [];
-    let counterInd = ccStartPointInd;
-  
-    slicedPoints.push(cellPoints[counterInd]);
-    while(counterInd != ccEndPointInd) {  
-      counterInd = mod(counterInd-1, cellPoints.length);
-      slicedPoints.push(cellPoints[counterInd]);
-    } 
-      
-    slicedPoints.splice(0, 0, [topIntersection.x, topIntersection.y]);
-    slicedPoints.push([bottomIntersection.x, bottomIntersection.y]);
-    // console.log(slicedPoints, ccStartPointInd, ccEndPointInd);
-    return {polygon: slicedPoints, line: fracLine};
-}
-
-function topStartSweep(cellPoints, frac){
-    //start just working on frac as left-to-right sweep, then generalize
-    let cellBbox = getBBox(cellPoints);
-    let yFrac = mixn(cellBbox.minY, cellBbox.maxY, frac);
-    let fracLine = [{x: cellBbox.maxX, y: yFrac}, {x: cellBbox.minX, y: yFrac}];
-    let lineSegments = cellPoints.map((p, i, a) => {
-        let p2 = a[(i+1)%a.length];
-        return [{x: p[0], y: p[1]}, {x: p2[0], y: p2[1]}];
-    });
-    let intersectingLines = lineSegments.filter(s => segment_intersection(s, fracLine));
-    let sharedPointDetector = new Set(); 
-    let dedupedLines = intersectingLines.filter(l => {
-        let hasPt = p => sharedPointDetector.has(JSON.stringify(p));
-        let noSharedPointsSeen = !(hasPt(l[0]) && hasPt(l[1]));
-        if(noSharedPointsSeen){
-            sharedPointDetector.add(JSON.stringify(l[0]));
-            sharedPointDetector.add(JSON.stringify(l[1]));
-        }
-        return noSharedPointsSeen
-    });
-    
-    //find "right most" line out of deduped lines
-    let l1Max = Math.max(dedupedLines[0][0].x, dedupedLines[0][1].x);
-    let l1Min = Math.min(dedupedLines[0][0].x, dedupedLines[0][1].x);
-    let l2Max = Math.max(dedupedLines[1][0].x, dedupedLines[1][1].x);
-    let l2Min = Math.min(dedupedLines[1][0].x, dedupedLines[1][1].x);
-
-    let l1IsRight = (l1Max >= l2Max && l1Min > l2Min);
-  
-    let rightLine = l1IsRight ? dedupedLines[0] : dedupedLines[1];
-    let leftLine = l1IsRight ? dedupedLines[1] : dedupedLines[0];
-  
-  
-    let rightIntersection = segment_intersection(fracLine, rightLine);
-    let leftIntersection = segment_intersection(fracLine, leftLine);
-
-  
-    //in counterclockwise (cc) order, the first point
-    let ccStartPointVal = rightLine[0].y < rightLine[1].y ? rightLine[0] : rightLine[1];  
-    let ccEndPointVal = leftLine[0].y < leftLine[1].y ? leftLine[0] : leftLine[1];
-
-    let searchablePoints = cellPoints.map(p => JSON.stringify(p));
-
-    let startPtStr = JSON.stringify([ccStartPointVal.x, ccStartPointVal.y]);
-    let endPtStr = JSON.stringify([ccEndPointVal.x, ccEndPointVal.y]);
-    let ccStartPointInd = searchablePoints.indexOf(startPtStr);
-    let ccEndPointInd = searchablePoints.indexOf(endPtStr);
-  
-  
-    let slicedPoints = [];
-    let counterInd = ccStartPointInd;
-  
-    slicedPoints.push(cellPoints[counterInd]);
-    while(counterInd != ccEndPointInd) {  
-      counterInd = mod(counterInd+1, cellPoints.length);
-      slicedPoints.push(cellPoints[counterInd]);
-    } 
-      
-    slicedPoints.splice(0, 0, [rightIntersection.x, rightIntersection.y]);
-    slicedPoints.push([leftIntersection.x, leftIntersection.y]);
-    // console.log(slicedPoints, ccStartPointInd, ccEndPointInd);
-    return {polygon: slicedPoints, line: fracLine};
-}
-
-function bottomStartSweep(cellPoints, frac){
-    //start just working on frac as left-to-right sweep, then generalize
-    frac = 1 - frac;
-    let cellBbox = getBBox(cellPoints);
-    let yFrac = mixn(cellBbox.minY, cellBbox.maxY, frac);
-    let fracLine = [{x: cellBbox.maxX, y: yFrac}, {x: cellBbox.minX, y: yFrac}];
-    let lineSegments = cellPoints.map((p, i, a) => {
-        let p2 = a[(i+1)%a.length];
-        return [{x: p[0], y: p[1]}, {x: p2[0], y: p2[1]}];
-    });
-    let intersectingLines = lineSegments.filter(s => segment_intersection(s, fracLine));
-    let sharedPointDetector = new Set(); 
-    let dedupedLines = intersectingLines.filter(l => {
-        let hasPt = p => sharedPointDetector.has(JSON.stringify(p));
-        let noSharedPointsSeen = !(hasPt(l[0]) && hasPt(l[1]));
-        if(noSharedPointsSeen){
-            sharedPointDetector.add(JSON.stringify(l[0]));
-            sharedPointDetector.add(JSON.stringify(l[1]));
-        }
-        return noSharedPointsSeen
-    });
-    
-    //find "right most" line out of deduped lines
-    let l1Max = Math.max(dedupedLines[0][0].x, dedupedLines[0][1].x);
-    let l1Min = Math.min(dedupedLines[0][0].x, dedupedLines[0][1].x);
-    let l2Max = Math.max(dedupedLines[1][0].x, dedupedLines[1][1].x);
-    let l2Min = Math.min(dedupedLines[1][0].x, dedupedLines[1][1].x);
-
-    let l1IsRight = (l1Max >= l2Max && l1Min > l2Min);
-  
-    let rightLine = l1IsRight ? dedupedLines[0] : dedupedLines[1];
-    let leftLine = l1IsRight ? dedupedLines[1] : dedupedLines[0];
-  
-  
-    let rightIntersection = segment_intersection(fracLine, rightLine);
-    let leftIntersection = segment_intersection(fracLine, leftLine);
-
-  
-    //in counterclockwise (cc) order, the first point
-    let ccStartPointVal = rightLine[0].y > rightLine[1].y ? rightLine[0] : rightLine[1];  
-    let ccEndPointVal = leftLine[0].y > leftLine[1].y ? leftLine[0] : leftLine[1];
-
-    let searchablePoints = cellPoints.map(p => JSON.stringify(p));
-
-    let startPtStr = JSON.stringify([ccStartPointVal.x, ccStartPointVal.y]);
-    let endPtStr = JSON.stringify([ccEndPointVal.x, ccEndPointVal.y]);
-    let ccStartPointInd = searchablePoints.indexOf(startPtStr);
-    let ccEndPointInd = searchablePoints.indexOf(endPtStr);
-  
-  
-    let slicedPoints = [];
-    let counterInd = ccStartPointInd;
-  
-    slicedPoints.push(cellPoints[counterInd]);
-    while(counterInd != ccEndPointInd) {  
-      counterInd = mod(counterInd-1, cellPoints.length);
-      slicedPoints.push(cellPoints[counterInd]);
-    } 
-      
-    slicedPoints.splice(0, 0, [rightIntersection.x, rightIntersection.y]);
-    slicedPoints.push([leftIntersection.x, leftIntersection.y]);
-    // console.log(slicedPoints, ccStartPointInd, ccEndPointInd);
-    return {polygon: slicedPoints, line: fracLine};
+    let polygon = pointsTheta.sort((p1, p2) => p2.theta - p1.theta).map(p => [p.x, p.y]);
+    return {polygon, line: fracLine};
 }
 
 let mod = (n, m) =>  ((n % m) + m) % m;
