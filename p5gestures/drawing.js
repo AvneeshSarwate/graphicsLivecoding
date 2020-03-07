@@ -19,18 +19,18 @@ function orderedEdges(cell){
     }
     return vertices
 }
-
+var newTime = () => 10;
 function drawing(){
     clear();
-    strokeWeight(40);
+    strokeWeight(1);
     sliders[0] = 0.3;
     sliders[1] = 0.04;
     
-    voronoiRefSites(time).forEach((s, i, a) => {
-        let s2 = voronoiSites[i];
-        s2.x = s.x + Math.sin(time * (1 + rand(i)))*0;
-        s2.y = s.y + Math.cos(time * (1 + rand(i)))*0; 
-    })
+    // voronoiRefSites(newTime()).forEach((s, i, a) => {
+    //     let s2 = voronoiSites[i];
+    //     s2.x = s.x + Math.sin(time * (1 + rand(i)))*0;
+    //     s2.y = s.y + Math.cos(time * (1 + rand(i)))*0; 
+    // })
     // voronoi.recycle(voronoiStructure)
     try{
         voronoiStructure = voronoi.compute(voronoiSites, bbox);
@@ -39,11 +39,15 @@ function drawing(){
     }
     fill(255);
     voronoiSites.forEach((site, i) => {
-        // if(rand(i) < 0.25) return;
-        let cell = voronoiStructure.cells[site.voronoiId];
-        fill(rand(i)*255, rand(i+.1)*255, rand(i+.2)*255)
+        // // if(rand(i) < 0.25) return;
+        // let cell = voronoiStructure.cells[site.voronoiId];
+        // fill(rand(i)*255, rand(i+.1)*255, rand(i+.2)*255)
+
+        noFill();
         beginShape();
-        orderedEdges(cell).forEach(pt => vertex(pt[0], pt[1]))
+        getSimplifiedPoints(i).forEach(pt => vertex(pt[0], pt[1]))
         endShape(CLOSE);
+        
+        // voronoiSiteAnimations[i].next();
     });
 }

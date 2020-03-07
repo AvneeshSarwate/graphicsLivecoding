@@ -316,11 +316,13 @@ function bottomStartSweep(cellPoints, frac){
     return {polygon: slicedPoints, line: fracLine};
 }
 
-let mod =  (n, m) =>  ((n % m) + m) % m;
+let mod = (n, m) =>  ((n % m) + m) % m;
 let arrayOf = n => Array.from(new Array(n), () => 0);
 let mixn = (n1, n2, a) => n1*(1-a) + n2*a;
+let mix = (v1, v2, a) => ({x: v1.x*(1-a) + v2.x*a, y: v1.y*(1-a) + v2.y*a});
 let sinN = n => (Math.sin(n)+1)/2;
-let time = () => Date.now()/1000;
+let cosN = n => (Math.cos(n)+1)/2;
+let time2 = () => Date.now()/1000;
 let r = 100;
 let c = 200;
 let squarePts = [[c, c], [c, c+r], [c+r, c+r], [c+r, c]];
@@ -334,9 +336,9 @@ function setup_test() {
 function draw_test() {
   clear();
   beginShape();
-  getPolygonSweep(circlePts, sinN(time())).map(p => vertex(...p));
+  getPolygonSweep(circlePts, sinN(time2())).map(p => vertex(...p));
   endShape(CLOSE);
-  ellipse(cos(-time())*r+c, sin(-time())*r+c, 10);
+  ellipse(cos(-time2())*r+c, sin(-time2())*r+c, 10);
 }
 
 

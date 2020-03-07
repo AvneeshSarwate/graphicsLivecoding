@@ -1,7 +1,6 @@
 //NOTE: - all callback values available outside of the eval must be VAR, not LET
 console.log("setup eval");
 
-var arrayOf = n => Array.from(new Array(n), () => 0);
 var p5w = 640, p5h = 480;
 var cvn;
 var p5Canvas = document.createElement("canvas");
@@ -9,25 +8,21 @@ var p5Canvas = document.createElement("canvas");
 // p5Canvas.height = p5h;
 var p5SetupCalled = false;
 
-var sinN = n => (Math.sin(n)+1)/2;
-var cosN = n => (Math.cos(n)+1)/2;
 var rand =  seed =>  {
     var x = Math.sin(seed + 1.1) * 10000;
     return x - Math.floor(x);
 }
 
-var simplex = new SimplexNoise();
+var simplex = new SimplexNoise(10);
 
 var sliders = Array.from(new Array(127), (e, i) => 0);
 
-var mod = (x, n) => ((x%n)+n)%n;
-
 var voronoi = new Voronoi();
 var bbox = {xl: 0, xr: p5w, yt: 0, yb: p5h}
-var numSites = 20;
+var numSites = 5;
 
 function circleCells(n){
-    return (time) => {
+    return (argTime) => {
         return arrayOf(n).map((e, i, a) => {
             return {
                 x: p5w/2 + Math.cos(i/a.length * Math.PI * 2)*p5w/2, 
@@ -36,7 +31,7 @@ function circleCells(n){
     }
 }
 function horizontalCells(n){
-    return (time) => {
+    return (argTime) => {
         return arrayOf(n).map((e, i, a) => {
             return {
                 x: i/a.length * p5w, 
@@ -45,7 +40,7 @@ function horizontalCells(n){
     }
 }
 function verticalCells(n){
-    return (time) => {
+    return (argTime) => {
         return arrayOf(n).map((e, i, a) => {
             return {
                 x: p5w/2, 
@@ -54,9 +49,9 @@ function verticalCells(n){
     }
 }
 function snoiseTrailCells(n){
-    return (time) => {
+    return (argTime) => {
         return arrayOf(n).map((e, i, a) => {
-            let indTime = time*sliders[0] - i * (sliders[1]+0.01);
+            let indTime = 100 + argTime*sliders[0] - i * (sliders[1]+0.01);
             let dimScale = (noiz, dim) => ((noiz /(.5)**0.5)+1)/2 * dim
             return {
                 x: dimScale(simplex.noise2D(51.32, indTime), p5h), 
@@ -64,15 +59,14 @@ function snoiseTrailCells(n){
             });
     }
 }
-var mix = (v1, v2, a) => ({x: v1.x*(1-a) + v2.x*a, y: v1.y*(1-a) + v2.y*a});
-var mixn = (n1, n2, a) => n1*(1-a) + n2*a;
+
 function lineCircleLerpCells(n){
     var lineFunc = horizontalCells(n);
     var circFunc = circleCells(n);
-    return (time) => {
+    return (argTime) => {
         let a = sliders[0];
-        let lineSites = lineFunc(time);
-        let circSites = circFunc(time);
+        let lineSites = lineFunc(argTime);
+        let circSites = circFunc(argTime);
         return lineSites.map((e, i) => {
             return mix(e, circSites[i], a);
         });
@@ -81,10 +75,10 @@ function lineCircleLerpCells(n){
 function sitesLerp(n, siteFuncGen1, siteFuncGen2, lerpFunc){
     var siteFunc1 = siteFuncGen1(n);
     var siteFunc2 = siteFuncGen2(n);
-    return (time) => {
+    return (argTime) => {
         let a = lerpFunc();
-        let sites1 = siteFunc1(time);
-        let sites2 = siteFunc2(time);
+        let sites1 = siteFunc1(argTime);
+        let sites2 = siteFunc2(argTime);
         return sites1.map((e, i) => {
             return mix(e, sites2[i], a);
         });
@@ -94,6 +88,9 @@ function sitesLerp(n, siteFuncGen1, siteFuncGen2, lerpFunc){
 var voronoiRefSites = snoiseTrailCells(numSites);// sitesLerp(numSites, verticalCells, horizontalCells, () => sinN(time));
 var voronoiSites = voronoiRefSites(0).map(s => Object.assign({}, s));
 var voronoiStructure = voronoi.compute(voronoiSites, bbox);
+
+
+var voronoiSiteAnimations = arrayOf(numSites).map((e, i) => lineLerpGen(i, 1));
 
 
 
@@ -153,6 +150,7 @@ function getPass2Uniforms(){
 
 var refTime = Date.now() / 1000;
 var time = 0;
+var getTime = () => time;
 var speedScale = (time) => 1;
 
 function refreshUniforms(){
