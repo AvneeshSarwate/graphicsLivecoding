@@ -19,6 +19,7 @@ WebMidi.enable(function (err) {
         // Listen for a 'cc' message on all channels
         input.addListener('controlchange', "all", function (e) {
             sliders[e.controller.number] = e.value/127;
+            handleSiteFunctionLerpMidi(e.controller.number, e.value);
         });
     }
 });

@@ -82,7 +82,23 @@ var padCells = (argTime) => {
     return padPoints;
 }
 
-var voronoiRefSites = circleCells;// sitesLerp(numSites, verticalCells, horizontalCells, () => sinN(time));
+var siteGenerators = [padCells, verticalCells, horizontalCells, circleCells];
+var generator1Ind = 0;
+var generator2Ind = 1;
+
+function handleSiteFunctionLerpMidi(ccNum, val){
+    if(val > 0){
+        if([31, 32, 33, 34].includes(ccNum)){
+            generator1Ind = ccNum - 31;
+        }
+        if([35, 36, 37, 38].includes(ccNum)){
+            generator2Ind = ccNum - 35;
+        }
+        voronoiRefSites = sitesLerp(siteGenerators[generator1Ind], siteGenerators[generator2Ind], () => sliders[30]);
+    }
+}
+
+var voronoiRefSites = sitesLerp(siteGenerators[generator1Ind], siteGenerators[generator2Ind], () => sliders[30]);// sitesLerp(numSites, verticalCells, horizontalCells, () => sinN(time));
 var voronoiSites = voronoiRefSites(0).map(s => Object.assign({}, s));
 var voronoiStructure = voronoi.compute(voronoiSites, bbox);
 
