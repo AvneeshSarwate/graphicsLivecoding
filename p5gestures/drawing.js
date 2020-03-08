@@ -42,7 +42,11 @@ function drawing(){
         // // if(rand(i) < 0.25) return;
         // let cell = voronoiStructure.cells[site.voronoiId];
         // fill(rand(i)*255, rand(i+.1)*255, rand(i+.2)*255)
-        voronoiSiteAnimations[i].next();
+        let siteAnim = voronoiSiteAnimations[i];
+        let val = siteAnim.next();
+        if(val.value) voronoiDrawFuncs[i] = val.value;
+        voronoiDrawFuncs[i]();
+
         noFill();
         beginShape();
         getSimplifiedPoints(i).forEach(pt => vertex(pt[0], pt[1]))

@@ -82,4 +82,5 @@ var voronoiSites = voronoiRefSites(0).map(s => Object.assign({}, s));
 var voronoiStructure = voronoi.compute(voronoiSites, bbox);
 
 
-var voronoiSiteAnimations = arrayOf(numSites).map((e, i) => lineLerpGen(i, 1));
+var voronoiSiteAnimations = arrayOf(numSites).map((e, i) => planeLerpGen(i, 1, "bottom"));
+var voronoiDrawFuncs = arrayOf(numSites).map((e, i) => (() => null));

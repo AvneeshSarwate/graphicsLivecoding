@@ -58,6 +58,7 @@ function segment_intersection(ray1, ray2) {
 function directionSweep(cellPoints, frac, direction){
     let cellBbox = getBBox(cellPoints);
     let isHorizontal = ['left', 'right'].includes(direction);
+    if(['bottom', 'right'].includes(direction)) frac = 1 - frac;
 
     let fracVal = isHorizontal ? mixn(cellBbox.minX, cellBbox.maxX, frac) : mixn(cellBbox.minY, cellBbox.maxY, frac);
     let fracLine = isHorizontal ? [{x: fracVal, y: cellBbox.maxY}, {x: fracVal, y: cellBbox.minY}] : [{x: cellBbox.maxX, y: fracVal}, {x: cellBbox.minX, y: fracVal}];

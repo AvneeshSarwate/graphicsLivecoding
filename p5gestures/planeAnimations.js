@@ -16,28 +16,33 @@ function getSimplifiedPoints(siteInd){
     return orderedEdges(cell);
 }
 
-function* lineLerpGen(ind, duration){
+function* planeLerpGen(ind, duration, direction){
     let startTIme = getTime();
     let elapsed = 0;
-    while(/*elapsed < duration*/true){
-        let frac = elapsed/duration;
-        push();
+    while(true){
+        let frac = Math.min(1, elapsed/duration);
+        
         let sweepPoints = [];
         try {
             let simplifiedPoints = getSimplifiedPoints(ind);
-            sweepPoints = directionSweep(simplifiedPoints, sinN(getTime()*10+ind/numSites*PI), 'bottom').polygon;
+            sweepPoints = directionSweep(simplifiedPoints, frac, direction).polygon;
         } catch(err){
-            // console.log("SWEEP ERROR", err, sweepPoints);
+            console.log("SWEEP ERROR", err, sweepPoints);
+            yield false;
         }
 
-        noStroke();
-        fill(rand(ind)*255, rand(ind+.1)*255, rand(ind+.2)*255);
-        beginShape();
-        sweepPoints.forEach(p => vertex(...p));
-        endShape(CLOSE);
-
-        pop();
         elapsed = getTime() - startTIme;
-        yield;
+        yield () => {
+            push();
+
+            noStroke();
+            fill(rand(ind)*255, rand(ind+.1)*255, rand(ind+.2)*255);
+            beginShape();
+            sweepPoints.forEach(p => vertex(...p));
+            endShape(CLOSE);
+
+            pop();
+        }
+        
     }
 } 
