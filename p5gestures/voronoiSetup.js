@@ -72,11 +72,19 @@ function sitesLerp(siteFuncGen1, siteFuncGen2, lerpFunc){
     }
 }
 
-var voronoiRefSites = snoiseTrailCells;// sitesLerp(numSites, verticalCells, horizontalCells, () => sinN(time));
+var padMap = {};
+arrayOf(100).forEach((e, i) => {padMap[i] = -1});
+var padCells = (argTime) => {
+    let padPoints = [];
+    Object.keys(padMap).forEach(k => {
+        if(padMap[k] != -1) padPoints.push(midiPadToPoint(k));
+    });
+    return padPoints;
+}
+
+var voronoiRefSites = padCells;// sitesLerp(numSites, verticalCells, horizontalCells, () => sinN(time));
 var voronoiSites = voronoiRefSites(0).map(s => Object.assign({}, s));
 var voronoiStructure = voronoi.compute(voronoiSites, bbox);
-
-
 
 
 var animationGenerators = [
@@ -96,25 +104,30 @@ var voronoiDrawFuncs = arrayOf(numSites).map((e, i) => (() => null));
 //number from 11/88 launchPad index style
 function midiPadToPoint(midiNum){
     return { 
-        x: ((midiNum%10)-1 + 0.5) / 8 * p5W,
+        x: ((midiNum%10)-1 + 0.5) / 8 * p5w,
         y: (9-(Math.floor(midiNum/10))-1 + 0.5) / 8 * p5h
     }
-
 }
 
 function parsePadSiteMap(mapStr){
-    let padMap = JSON.parse(mapStr);
+    padMap = JSON.parse(mapStr);
     let padPoints = [];
-    // numSites = 
+    let padAnimations = [];
+    numSites = 0;
     Object.keys(padMap).forEach(k => {
         let v = padMap[k];
-        padPoints.push(midiPadToPoint(k));
-
+        if(v != -1){
+            padPoints.push(midiPadToPoint(k));
+            padAnimations.push(v);
+            numSites++
+        }
     });
-    return;
+    voronoiSiteAnimations = arrayOf(numSites).map((e, i) => animationGenerators[padAnimations[i]](i) )
+    
+    voronoiDrawFuncs = arrayOf(numSites).map((e, i) => (() => null));
 }
 
 osc.on("/padSiteMap", (msg)=>{
     let someVar = msg.args[0];
-
+    parsePadSiteMap(msg.args[0]);
 });

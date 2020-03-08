@@ -21,7 +21,7 @@ osc.on("/exampleListener", (msg)=>{
     let someVar = msg.args[0];
 });
 
-
+var debugFlags = arrayOf(100);
 
 
 function setup(){

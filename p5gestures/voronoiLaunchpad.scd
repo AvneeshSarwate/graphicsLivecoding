@@ -63,7 +63,7 @@ MIDIFunc.noteOn({|vel, note, chan, port|
             padToAnimationMap[note] = -1;
             launchpadOut.noteOff(0, note);
         });
-        oscBrowserPort.sendMsg("/padSiteMap", JSON.stringify(padToAnimationMap);
+        oscBrowserPort.sendMsg("/padSiteMap", JSON.stringify(padToAnimationMap));
     });
     if(padMode == assign_MODE, {
         if(padToAnimationMap[note] != -1, {
@@ -71,7 +71,7 @@ MIDIFunc.noteOn({|vel, note, chan, port|
             launchpadOut.noteOn(0, note, animation_COLORS[selectedAnimationIndex]);
         });
 
-        oscBrowserPort.sendMsg("/padSiteMap", JSON.stringify(padToAnimationMap);
+        oscBrowserPort.sendMsg("/padSiteMap", JSON.stringify(padToAnimationMap));
     });
 
     if(padMode == trigger_MODE, {

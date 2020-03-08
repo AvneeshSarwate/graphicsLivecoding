@@ -22,7 +22,7 @@ function orderedEdges(cell){
 var newTime = 10;
 function drawing(){
     clear();
-    strokeWeight(2);
+    strokeWeight(40);
     sliders[0] = 0.3;
     sliders[1] = 0.04;
     sliders[3] = 1;
@@ -41,11 +41,14 @@ function drawing(){
         console.log("VORONOI ERROR", err);
     }
     fill(255);
+    if(debugFlags[0]) debugger;
     voronoiSites.forEach((site, i) => {
+        if(debugFlags[1]) debugger;
         // // if(rand(i) < 0.25) return;
         // let cell = voronoiStructure.cells[site.voronoiId];
         // fill(rand(i)*255, rand(i+.1)*255, rand(i+.2)*255)
         let siteAnim = voronoiSiteAnimations[i];
+        if(!siteAnim) debugger;
         let val = siteAnim.next();
         if(val.value) voronoiDrawFuncs[i] = val.value;
         voronoiDrawFuncs[i]();
