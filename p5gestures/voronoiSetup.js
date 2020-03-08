@@ -11,20 +11,20 @@ var simplex = new SimplexNoise(10);
 
 var voronoi = new Voronoi();
 var bbox = {xl: 0, xr: p5w, yt: 0, yb: p5h}
-var numSites = 0;
+var numSites = 20;
 
 let circleCells =  (argTime) => {
-    return arrayOf(n).map((e, i, a) => {
+    return arrayOf(numSites).map((e, i, a) => {
         return {
-            x: p5w/2 + Math.cos(i/a.length * Math.PI * 2 + time)*p5w/2, 
-            y: p5h/2 + Math.sin(i/a.length * Math.PI * 2 + time)*p5h/2}
+            x: p5w/2 + Math.cos(i/a.length * Math.PI * 2 + argTime)*p5w/2, 
+            y: p5h/2 + Math.sin(i/a.length * Math.PI * 2 + argTime)*p5h/2}
         });
 }
 
 let  horizontalCells = (argTime) => {
     return arrayOf(numSites).map((e, i, a) => {
         return {
-            x: i/a.length * p5w, 
+            x: (i/a.length * p5w + argTime*p5h) % p5w, 
             y: p5h/2}
         });
 }
@@ -33,7 +33,7 @@ let verticalCells = (argTime) => {
     return arrayOf(numSites).map((e, i, a) => {
         return {
             x: p5w/2, 
-            y: i/a.length * p5h}
+            y: (i/a.length * p5h + argTime*p5w) % p5h}
         });
 }
 
@@ -82,7 +82,7 @@ var padCells = (argTime) => {
     return padPoints;
 }
 
-var voronoiRefSites = padCells;// sitesLerp(numSites, verticalCells, horizontalCells, () => sinN(time));
+var voronoiRefSites = circleCells;// sitesLerp(numSites, verticalCells, horizontalCells, () => sinN(time));
 var voronoiSites = voronoiRefSites(0).map(s => Object.assign({}, s));
 var voronoiStructure = voronoi.compute(voronoiSites, bbox);
 

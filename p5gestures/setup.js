@@ -81,4 +81,4 @@ function refreshUniforms(){
 
 sliders[0] = 1;
 sliders[1] = 0.5;
-sliders[2] = 0.5;
+sliders[2] = 0.1;
