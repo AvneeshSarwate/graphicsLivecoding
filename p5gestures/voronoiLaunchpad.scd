@@ -115,13 +115,21 @@ MIDIFunc.cc({|vel, note, chan, port|
             });
         });
     });
-    if(bank_BUTTONS.includes(note), {
+    if(bank_BUTTONS.includes(note) && (vel != 0), {
         if(bankSaveMode, {
             bankMap[note] =  padToAnimationMap.copy;
             launchpadOut.noteOn(0, note, noAnimation_COLOR);
         },{
             if(bankMap.keys.includes(note), {
                 padToAnimationMap = bankMap[note].copy;
+                padToAnimationMap.keys.do({|k|
+                    var isPad = (1..8).includes(k%10) && (((k/10).floor >=1) && ((k/10).floor <= 8));
+                    var val = padToAnimationMap[k];
+                    // ["BANK LIGHT", k, isPad, (1..8).includes(k%10), (1..8).includes((k/10).floor)].postln;
+                    if(isPad, {
+                        launchpadOut.noteOn(0, k, if(val == -1, 0, animation_COLORS[val]));
+                    });
+                });
                 oscBrowserPort.sendMsg("/padSiteMap", JSON.stringify(padToAnimationMap));
             });
         });
@@ -134,4 +142,6 @@ MIDIFunc.cc({|vel, note, chan, port|
 }, nil, nil, launchpad.uid);
 
 )
+
+
 
