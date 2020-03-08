@@ -22,6 +22,7 @@ function* planeLerpGen(ind, duration, direction){
     let elapsed = 0;
     while(true){
         let frac = Math.min(1, elapsed/duration);
+        //TODO - gesutre start phase - frac = Math.max(Math.min(1, elapsed/duration - ind*sliders[4]), 0)
         
         let sweepPoints = [];
         try {
