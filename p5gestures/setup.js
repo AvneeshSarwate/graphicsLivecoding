@@ -50,7 +50,8 @@ function getPass1Uniforms(){
         time: time,
         resolution: [gl.canvas.width, gl.canvas.height],
         p5: textures.p5Canvas,
-        backbuffer: frameBuffers[frameBufferIndex].attachments[0]
+        backbuffer: frameBuffers[frameBufferIndex].attachments[0],
+        sliderVals: sliders
     }
 }
 
@@ -60,14 +61,15 @@ function getPass2Uniforms(){
         resolution: [gl.canvas.width, gl.canvas.height],
         p5: textures.p5Canvas,
         lastStage: frameBuffers[(frameBufferIndex + 1) % 2].attachments[0],
-        backbuffer: frameBuffers2[frameBufferIndex].attachments[0]
+        backbuffer: frameBuffers2[frameBufferIndex].attachments[0],
+        sliderVals: sliders
     }
 }
 
 var refTime = Date.now() / 1000;
 var time = 0;
 var getTime = () => time;
-var speedScale = (time) => 0.2; //TODO sliders
+var speedScale = (time) => 2 * sliders[0]; //TODO sliders
 
 function refreshUniforms(){
     var increment = Date.now() / 1000 - refTime;
@@ -75,3 +77,8 @@ function refreshUniforms(){
     twgl.setTextureFromElement(gl, textures.p5Canvas, p5Canvas);
     refTime = Date.now() / 1000;
 }
+
+
+sliders[0] = 1;
+sliders[1] = 0.5;
+sliders[2] = 0.5;

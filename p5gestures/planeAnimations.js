@@ -33,7 +33,7 @@ function* planeLerpGen(ind, duration, direction){
             yield false;
         }
         let newTime = getTime()
-        elapsed += (newTime - lastFrameTime) *sliders[3] ; //TODO-slider - put one here for gesture time (and preset slider js array val to start at "1")
+        elapsed += (newTime - lastFrameTime) * (1-sliders[1]) / 2 ; //TODO-slider - put one here for gesture time (and preset slider js array val to start at "1")
         lastFrameTime = newTime;
         yield () => {
             push();

@@ -20,8 +20,8 @@ void main () {
     vec2 stN = uvN();
     vec2 p5N = vec2(stN.x, 1.-stN.y);
     vec2 cent = vec2(0.5);
-    vec3 warpN = ballTwist(stN,  500./10.+120., 10., .9, .5);
-    vec4 bb = texture(backbuffer, mix(stN, warpN.xy, .51));
+    vec3 warpN = ballTwist(stN,  60.*sliderVals[4]+120., 10., .9, .5);
+    vec4 bb = texture(backbuffer, mix(stN, warpN.xy, sliderVals[3]));
     vec4 p5col = texture(p5, p5N);
 
     fragColor = mix(p5col, bb, p5col.rgb == black ? .98 : 0.); //vec4(mix(bb.rg, stN, 0.005), stN);
