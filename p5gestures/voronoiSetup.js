@@ -11,7 +11,7 @@ var simplex = new SimplexNoise(10);
 
 var voronoi = new Voronoi();
 var bbox = {xl: 0, xr: p5w, yt: 0, yb: p5h}
-var numSites = 10;
+var numSites = 0;
 
 let circleCells =  (argTime) => {
     return arrayOf(n).map((e, i, a) => {
@@ -114,7 +114,7 @@ function parsePadSiteMap(mapStr){
     let padPoints = [];
     let padAnimations = [];
     numSites = 0;
-    Object.keys(padMap).forEach(k => {
+    Object.keys(padMap).sort().forEach(k => {
         let v = padMap[k];
         if(v != -1){
             padPoints.push(midiPadToPoint(k));
@@ -128,6 +128,12 @@ function parsePadSiteMap(mapStr){
 }
 
 osc.on("/padSiteMap", (msg)=>{
-    let someVar = msg.args[0];
     parsePadSiteMap(msg.args[0]);
+});
+
+osc.on("/animationAssign", (msg) => {
+    let pad = msg.args[0];
+    let animIndex = msg.args[1];
+    let arrayInd = Object.keys(padMap).sort().filter(k => padMap[k]>-1).indexOf(pad+"");
+    voronoiSiteAnimations[arrayInd] = animationGenerators[animIndex](arrayInd);
 });

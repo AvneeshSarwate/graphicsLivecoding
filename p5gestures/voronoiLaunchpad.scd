@@ -71,7 +71,7 @@ MIDIFunc.noteOn({|vel, note, chan, port|
             launchpadOut.noteOn(0, note, animation_COLORS[selectedAnimationIndex]);
         });
 
-        oscBrowserPort.sendMsg("/padSiteMap", JSON.stringify(padToAnimationMap));
+        oscBrowserPort.sendMsg("/animationAssign", note, selectedAnimationIndex);
     });
 
     if(padMode == trigger_MODE, {
