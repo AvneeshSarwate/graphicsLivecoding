@@ -21,7 +21,7 @@ vec3 coordWarp(vec2 stN, float t2){
     
     float rad = .5;
     
-    for (float i = 0.0; i < 20.; i++) {
+    for (float i = 0.0; i < 40.; i++) {
         vec2 p = vec2(sinN(t2* rand(i+1.) * 1.3 + i), cosN(t2 * rand(i+1.) * 1.1 + i));
         warp = length(p - stN) <= rad ? mix(warp, p, 1. - length(stN - p)/rad)  : warp;
     }
@@ -40,7 +40,7 @@ out vec4 fragColor;
 void main () {
     vec2 stN = uvN();
     vec3 warpN = coordWarp(stN,  time/10.+120.);
-    vec4 pos = texture(lastStage, quant(mix(stN, warpN.xy, sliderVals[6]), 1000.*pow(1.-sliderVals[5],4.)) );
+    vec4 pos = texture(lastStage, quant(mix(stN, warpN.xy, sliderVals[6]), 1000.*pow(1.-sliderVals[5],2.)) );
     vec3 col = texture(p5, mix(pos.rg, pos.ba, 0.1)).rgb;
     vec4 bb = texture(backbuffer, mix(stN, warpN.xy, .05));
     

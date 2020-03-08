@@ -11,7 +11,7 @@ var simplex = new SimplexNoise(10);
 
 var voronoi = new Voronoi();
 var bbox = {xl: 0, xr: p5w, yt: 0, yb: p5h}
-var numSites = 20;
+var numSites = 0;
 
 let circleCells =  (argTime) => {
     return arrayOf(numSites).map((e, i, a) => {

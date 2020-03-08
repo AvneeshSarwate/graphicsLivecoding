@@ -14,7 +14,7 @@ WebMidi.enable(function (err) {
         console.log("WebMidi could not be enabled.", err);
     } else {
         // Retrieve an input by name, id or index
-        var input = WebMidi.getInputByName("Bus 2");
+        var input = WebMidi.getInputByName("TouchOSC Bridge");
 
         // Listen for a 'cc' message on all channels
         input.addListener('controlchange', "all", function (e) {
