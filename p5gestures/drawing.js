@@ -22,16 +22,18 @@ function orderedEdges(cell){
 var newTime = 10;
 function drawing(){
     clear();
-    strokeWeight(20);
+    strokeWeight(2);
     sliders[0] = 0.3;
     sliders[1] = 0.04;
     sliders[3] = 1;
     
-    voronoiRefSites(time).forEach((s, i, a) => {
-        let s2 = voronoiSites[i];
-        s2.x = s.x + Math.sin(time * (1 + rand(i)))*0;
-        s2.y = s.y + Math.cos(time * (1 + rand(i)))*0; 
-    });
+    // voronoiRefSites(time).forEach((s, i, a) => {
+    //     let s2 = voronoiSites[i];
+    //     s2.x = s.x + Math.sin(time * (1 + rand(i)))*0;
+    //     s2.y = s.y + Math.cos(time * (1 + rand(i)))*0; 
+    // });
+
+    voronoiSites = voronoiRefSites(time);
 
     try{
         voronoiStructure = voronoi.compute(voronoiSites, bbox);

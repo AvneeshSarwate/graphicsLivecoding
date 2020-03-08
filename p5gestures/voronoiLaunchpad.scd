@@ -5,6 +5,9 @@
 /*NOTES
 -- in trigger_MODE - hitting the button of an animation triggers all pannels with that animation
 
+-- toggle for INSTANT option in assign mode, where you can add a new point with the current
+-- animation index AND it will fire (or if you over-write a current mode, it will also fire)
+
 */
 
 var launchpad, launchpadOut, oscBrowserPort, padToAnimationMap, padMode, toggle_MODE, assign_MODE, trigger_MODE, toggleMode_BUTTON, assignMode_BUTTON, triggerMode_BUTTON, padMode_BUTTONS, padMode_COLOR, noAnimation_COLOR, animation_COLORS, animation_BUTTONS, selectedAnimationIndex;
@@ -18,6 +21,8 @@ oscBrowserPort = NetAddr("localhost", 5432);
 
 
 (0..99).do({|i| launchpadOut.noteOff(0, i)});
+
+
 
 
 padToAnimationMap = Dictionary.new;
@@ -58,12 +63,15 @@ MIDIFunc.noteOn({|vel, note, chan, port|
             padToAnimationMap[note] = -1;
             launchpadOut.noteOff(0, note);
         });
+        oscBrowserPort.sendMsg("/padSiteMap", JSON.stringify(padToAnimationMap);
     });
     if(padMode == assign_MODE, {
         if(padToAnimationMap[note] != -1, {
             padToAnimationMap[note] = selectedAnimationIndex;
             launchpadOut.noteOn(0, note, animation_COLORS[selectedAnimationIndex]);
         });
+
+        oscBrowserPort.sendMsg("/padSiteMap", JSON.stringify(padToAnimationMap);
     });
 
     if(padMode == trigger_MODE, {
