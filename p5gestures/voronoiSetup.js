@@ -137,3 +137,10 @@ osc.on("/animationAssign", (msg) => {
     let arrayInd = Object.keys(padMap).sort().filter(k => padMap[k]>-1).indexOf(pad+"");
     voronoiSiteAnimations[arrayInd] = animationGenerators[animIndex](arrayInd);
 });
+
+osc.on("/animationTrigger", (msg) => {
+    let pad = msg.args[0];
+    let animIndex = msg.args[1];
+    let arrayInd = Object.keys(padMap).sort().filter(k => padMap[k]>-1).indexOf(pad+"");
+    voronoiSiteAnimations[arrayInd] = animationGenerators[animIndex](arrayInd);
+});

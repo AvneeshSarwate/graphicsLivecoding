@@ -10,7 +10,7 @@
 
 */
 
-var launchpad, launchpadOut, oscBrowserPort, padToAnimationMap, padMode, toggle_MODE, assign_MODE, trigger_MODE, toggleMode_BUTTON, assignMode_BUTTON, triggerMode_BUTTON, padMode_BUTTONS, padMode_COLOR, noAnimation_COLOR, animation_COLORS, animation_BUTTONS, selectedAnimationIndex;
+var launchpad, launchpadOut, oscBrowserPort, padToAnimationMap, padMode, toggle_MODE, assign_MODE, trigger_MODE, toggleMode_BUTTON, assignMode_BUTTON, triggerMode_BUTTON, padMode_BUTTONS, padMode_COLOR, noAnimation_COLOR, animation_COLORS, animation_BUTTONS, selectedAnimationIndex, bankMap, bankSaveMode, bank_BUTTONS, bankSave_BUTTON, bankSave_COLOR;
 
 var launchpadIndex = 1;
 launchpad = ~getLaunchpadIn.(launchpadIndex);
@@ -45,6 +45,13 @@ animation_COLORS = ([0, 1, 2, 3, 4, 5, 6, 7] * 8) + 1;
 animation_COLORS[0] = noAnimation_COLOR;
 
 
+bankSave_BUTTON = 59;
+bankSave_COLOR = 5;
+bankSaveMode = false;
+bank_BUTTONS = [1, 2, 3, 4, 5, 6, 7, 8] * 10;
+bankMap = Dictionary.new;
+
+
 animation_BUTTONS = (1..8);
 selectedAnimationIndex = 0;
 (0..7).do({|i| launchpadOut.noteOn(0, animation_BUTTONS[i], animation_COLORS[i])});
@@ -75,7 +82,10 @@ MIDIFunc.noteOn({|vel, note, chan, port|
     });
 
     if(padMode == trigger_MODE, {
-
+        var animInd = padToAnimationMap[note];
+        if(animInd != -1, {
+            oscBrowserPort.sendMsg("/animationTrigger", note, animInd);
+        });
     });
 
 
@@ -97,15 +107,31 @@ MIDIFunc.cc({|vel, note, chan, port|
             launchpadOut.noteOn(0, assignMode_BUTTON, animation_COLORS[selectedAnimationIndex]);
         });
         if(padMode == trigger_MODE, {
-
+            padToAnimationMap.keys.do({|k|
+                var v = padToAnimationMap[k];
+                if(v == animation_BUTTONS.indexOf(note), {
+                    oscBrowserPort.sendMsg("/animationTrigger", k, v);
+                });
+            });
         });
+    });
+    if(bank_BUTTONS.includes(note), {
+        if(bankSaveMode, {
+            bankMap[note] =  padToAnimationMap.copy;
+            launchpadOut.noteOn(0, note, noAnimation_COLOR);
+        },{
+            if(bankMap.keys.includes(note), {
+                padToAnimationMap = bankMap[note].copy;
+                oscBrowserPort.sendMsg("/padSiteMap", JSON.stringify(padToAnimationMap));
+            });
+        });
+    });
+    if((note == bankSave_BUTTON) && (vel != 0), {
+        bankSaveMode = bankSaveMode.not;
+        launchpadOut.noteOn(0, note, if(bankSaveMode, bankSave_COLOR, 0));
     });
 
 }, nil, nil, launchpad.uid);
 
-
-
-
 )
 
-[1, 2, 3].includes(3)
