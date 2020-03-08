@@ -45,18 +45,27 @@ selectedAnimationIndex = 0;
 (0..7).do({|i| launchpadOut.noteOn(0, animation_BUTTONS[i], animation_COLORS[i])});
 
 (0..99).do({|i|
-    padToAnimationMap = 0; //-1 is on but noAnimation, 0 is  off, 1-n are animations
+    padToAnimationMap[i] = -1; //-1 is off, 0 is  no-animation, 1-n are animations
 });
 
 MIDIFunc.noteOn({|vel, note, chan, port|
     if(padMode == toggle_MODE, {
-        padToAnimationMap[note] = -1;
-        //send message to js adding note
-        launchpadOut.noteOn(0, note, noAnimation_COLOR);
+        if(padToAnimationMap[note] == -1, {
+            padToAnimationMap[note] = 0;
+            //send message to js adding note
+            launchpadOut.noteOn(0, note, noAnimation_COLOR);
+        }, {
+            padToAnimationMap[note] = -1;
+            launchpadOut.noteOff(0, note);
+        });
     });
     if(padMode == assign_MODE, {
-
+        if(padToAnimationMap[note] != -1, {
+            padToAnimationMap[note] = selectedAnimationIndex;
+            launchpadOut.noteOn(0, note, animation_COLORS[selectedAnimationIndex]);
+        });
     });
+
     if(padMode == trigger_MODE, {
 
     });
@@ -72,6 +81,16 @@ MIDIFunc.cc({|vel, note, chan, port|
         padMode_BUTTONS.do({|b| launchpadOut.noteOff(0, b)});
         buttonColor = if(note == assignMode_BUTTON, animation_COLORS[selectedAnimationIndex], padMode_COLOR);
         launchpadOut.noteOn(0, note, buttonColor);
+    });
+
+    if(animation_BUTTONS.includes(note), {
+        if(padMode == assign_MODE, {
+            selectedAnimationIndex = animation_BUTTONS.indexOf(note);
+            launchpadOut.noteOn(0, assignMode_BUTTON, animation_COLORS[selectedAnimationIndex]);
+        });
+        if(padMode == trigger_MODE, {
+
+        });
     });
 
 }, nil, nil, launchpad.uid);

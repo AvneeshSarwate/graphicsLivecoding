@@ -25,7 +25,7 @@ function drawing(){
     strokeWeight(20);
     sliders[0] = 0.3;
     sliders[1] = 0.04;
-    // sliders[3] = 1;
+    sliders[3] = 1;
     
     voronoiRefSites(time).forEach((s, i, a) => {
         let s2 = voronoiSites[i];
