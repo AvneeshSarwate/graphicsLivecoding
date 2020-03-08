@@ -93,7 +93,7 @@ MIDIFunc.noteOn({|vel, note, chan, port|
 
 
 MIDIFunc.cc({|vel, note, chan, port|
-    if(padMode_BUTTONS.includes(note), {
+    if(padMode_BUTTONS.includes(note) && (vel != 0), {
         var buttonColor;
         padMode = note;
         padMode_BUTTONS.do({|b| launchpadOut.noteOff(0, b)});
@@ -101,7 +101,7 @@ MIDIFunc.cc({|vel, note, chan, port|
         launchpadOut.noteOn(0, note, buttonColor);
     });
 
-    if(animation_BUTTONS.includes(note), {
+    if(animation_BUTTONS.includes(note) && (vel != 0), {
         if(padMode == assign_MODE, {
             selectedAnimationIndex = animation_BUTTONS.indexOf(note);
             launchpadOut.noteOn(0, assignMode_BUTTON, animation_COLORS[selectedAnimationIndex]);
