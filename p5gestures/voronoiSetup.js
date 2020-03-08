@@ -39,7 +39,7 @@ let verticalCells = (argTime) => {
 
 let snoiseTrailCells = (argTime) => {
     return arrayOf(numSites).map((e, i, a) => {
-        let indTime = 100 + argTime - i * (sliders[8]+0.01);
+        let indTime = 100 + argTime - i * (sliders[8]*0.3+0.003);
         let dimScale = (noiz, dim) => (noiz +1)/2 * dim
         return {
             x: dimScale(simplex.noise2D(51.32, indTime), p5w), 
@@ -82,18 +82,19 @@ var padCells = (argTime) => {
     return padPoints;
 }
 
-var siteGenerators = [padCells, verticalCells, horizontalCells, circleCells];
+var siteGenerators = [padCells, verticalCells, horizontalCells, circleCells, snoiseTrailCells];
 var generator1Ind = 0;
 var generator2Ind = 1;
 
 function handleSiteFunctionLerpMidi(ccNum, val){
     if(val > 0){
-        if([31, 32, 33, 34].includes(ccNum)){
+        if([31, 32, 33, 34, 35].includes(ccNum)){
             generator1Ind = ccNum - 31;
         }
-        if([35, 36, 37, 38].includes(ccNum)){
-            generator2Ind = ccNum - 35;
+        if([36, 37, 38, 39, 40].includes(ccNum)){
+            generator2Ind = ccNum - 36;
         }
+        console.log("GEN INDS", generator1Ind, generator2Ind);
         voronoiRefSites = sitesLerp(siteGenerators[generator1Ind], siteGenerators[generator2Ind], () => sliders[30]);
     }
 }
