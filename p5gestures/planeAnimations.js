@@ -17,7 +17,8 @@ function getSimplifiedPoints(siteInd){
 }
 
 function* planeLerpGen(ind, duration, direction){
-    let startTIme = getTime();
+    let startTime = getTime();
+    let lastFrameTime = startTime;
     let elapsed = 0;
     while(true){
         let frac = Math.min(1, elapsed/duration);
@@ -30,8 +31,9 @@ function* planeLerpGen(ind, duration, direction){
             console.log("SWEEP ERROR", err, sweepPoints);
             yield false;
         }
-
-        elapsed = getTime() - startTIme;
+        let newTime = getTime()
+        elapsed += (newTime - lastFrameTime) *sliders[3] ; //TODO-slider - put one here for gesture time (and preset slider js array val to start at "1")
+        lastFrameTime = newTime;
         yield () => {
             push();
 
