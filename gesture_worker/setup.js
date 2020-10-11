@@ -1,6 +1,7 @@
 //NOTE: - all callback values available outside of the eval must be VAR, not LET
 console.log("setup eval");
 
+var arrayOf = n => Array.from(new Array(n), () => 0);
 var p5w = 640, p5h = 480;
 var cvn;
 var p5Canvas = document.createElement("canvas");
@@ -29,7 +30,7 @@ var gesturePoints = [];
 
 
 gestureShareWorker.port.onmessage = (e) => {
-    console.log("gesture points", e.data);
+    // console.log("gesture points", e.data);
     gesturePoints = e.data;
 }
 gestureShareWorker.port.start();
