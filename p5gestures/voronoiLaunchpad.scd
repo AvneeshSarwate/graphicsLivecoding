@@ -8,6 +8,8 @@
 -- toggle for INSTANT option in assign mode, where you can add a new point with the current
 -- animation index AND it will fire (or if you over-write a current mode, it will also fire)
 
+-- have a "HOLD" mode in assign mode, where releasing a pad removes the voronoi point
+
 */
 
 var launchpad, launchpadOut, oscBrowserPort, padToAnimationMap, padMode, toggle_MODE, assign_MODE, trigger_MODE, toggleMode_BUTTON, assignMode_BUTTON, triggerMode_BUTTON, padMode_BUTTONS, padMode_COLOR, noAnimation_COLOR, animation_COLORS, animation_BUTTONS, selectedAnimationIndex, bankMap, bankSaveMode, bank_BUTTONS, bankSave_BUTTON, bankSave_COLOR;

@@ -1,0 +1,80 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html lang="en">
+
+<head>
+    <meta http-equiv="content-type" content="text/html; charset=utf-8">
+    <link rel="stylesheet" href="../w3.css">
+    <title>Voronoi Fun</title>
+    <script type="text/javascript" src="../p5.js"></script>
+    <script type="text/javascript" src="../p5.func.js"></script>
+    <script type="text/javascript" src="../jquery.js"></script>
+    <script type="text/javascript" src="../svg.js"></script>
+    <script type="text/javascript" src="../twgl-full.js"></script>
+    <script type="text/javascript" src="../lodash.js"></script>
+    <script type="text/javascript" src="../WebMidi.js"></script>
+    <script type="text/javascript" src="../FPSMeter.js"></script>
+    <script type="text/javascript" src="../dat.gui.js"></script>
+    <script type="text/javascript" src="../osc.js"></script>
+    <script type="text/javascript" src="simplex-noise.js"></script>
+    <script type="text/javascript" src="rhill-voronoi-core.js"></script>
+    <script type="text/javascript" src="../ace_src/ace.js"  charset="utf-8"></script>
+    <script type="text/javascript" src="../ace_src/theme-twilight.js" charset="utf-8"></script>
+    <style>
+        .codeEditor {
+            position: absolute; 
+            background: transparent;
+            left: 0px; 
+            top: 10px;
+            bottom: 40px;
+            right: 10px;
+            text-shadow: rgba( 0, 0, 0, 1 ) 0px 1px 1px;
+        }
+        .renderBody {
+            position: absolute;
+            height: 100%;
+            width: 100%;
+            top: 35px;
+        }
+        /* #p5Canvas {
+            display: none;
+        } */
+        #editor-container {
+            position: fixed; 
+            width: 960px; 
+            height: 540px; 
+            top: 500px;
+        }
+    </style>
+</head>
+
+<body style="background-color: white;">
+    <div id="editor-container">
+        <div class="w3-bar w3-black">
+            <button class="w3-bar-item w3-button tablink w3-red" onclick="showEditor(event, 0)">JS Draw</button>
+            <button class="w3-bar-item w3-button tablink" onclick="showEditor(event, 1)">Shader 1</button>
+            <button class="w3-bar-item w3-button tablink" onclick="showEditor(event, 2)">Shader 2</button>
+        </div>
+
+        <canvas id="glCanvas" class="renderBody" width="800" height="600"></canvas>
+        <div id="editor0" class="codeEditor renderBody" ></div>
+        <div id="editor1" class="codeEditor renderBody"></div>
+        <div id="editor2" class="codeEditor renderBody"></div>
+    </div>
+</body>
+<script id="vs" type="notjs">
+#version 300 es
+in vec4 position;
+
+void main() {
+gl_Position = position;
+}
+</script>
+<script type="text/javascript" src="polygonSweep.js"></script>
+<script type="text/javascript" src="planeAnimations.js"></script>
+<script type="text/javascript" src="setup.js"></script>
+<script type="text/javascript" src="voronoiSetup.js"></script>
+<script type="text/javascript" src="drawing.js"></script>
+<script type="text/javascript" src="controllers.js"></script>
+<script src="../glSetup2.js"></script>
+<script src="../editorSetup.js"></script>
+</html>
